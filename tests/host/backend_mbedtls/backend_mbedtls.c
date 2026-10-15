@@ -3,6 +3,8 @@
  * Test-only backend over Mbed TLS's legacy crypto, so the core runs on a
  * host: ocrypto exists only as Cortex-M archives. Never shipped. Built with
  * mbedtls_legacy_config.h, so this file must not include PSA headers.
+ * TP_TEST_PORTABLE_HASH leaves a family out, so the portable backend's own
+ * C version can be tested in its place.
  */
 #include <stdlib.h>
 #include <string.h>
@@ -18,10 +20,12 @@
 #include "backend.h"
 #include "tinypsa_backend_ctx.h"
 
+#ifndef TP_TEST_PORTABLE_HASH
 struct hmac {
 	mbedtls_sha256_context sha;
 	uint8_t opad[64];
 };
+#endif
 
 enum { KIND_CCM = 0x43434d, KIND_GCM = 0x47434d };
 
@@ -34,12 +38,15 @@ struct aead {
 	} u;
 };
 
+#ifndef TP_TEST_PORTABLE_HASH
 _Static_assert(sizeof(mbedtls_sha256_context) <= TINYPSA_SHA256_CTX_SIZE, "sha256 ctx");
 _Static_assert(sizeof(struct hmac) <= TINYPSA_HMAC_SHA256_CTX_SIZE, "hmac ctx");
+#endif
 _Static_assert(sizeof(mbedtls_aes_context) <= TINYPSA_AES_CTX_SIZE, "aes ctx");
 _Static_assert(sizeof(struct aead) <= TINYPSA_CCM_CTX_SIZE, "ccm ctx");
 _Static_assert(sizeof(struct aead) <= TINYPSA_GCM_CTX_SIZE, "gcm ctx");
 
+#ifndef TP_TEST_PORTABLE_HASH
 void tp_be_sha256_init(void *ctx)
 {
 	mbedtls_sha256_init(ctx);
@@ -91,6 +98,7 @@ void tp_be_hmac_sha256_final(void *ctx, uint8_t out[32])
 	mbedtls_sha256_update(&h->sha, inner, sizeof(inner));
 	tp_be_sha256_final(&h->sha, out);
 }
+#endif /* TP_TEST_PORTABLE_HASH */
 
 void tp_be_aes_init(void *ctx, const uint8_t *key, size_t key_len)
 {

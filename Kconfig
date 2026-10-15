@@ -25,6 +25,14 @@ config TINYPSA_BACKEND_OCRYPTO
 	  Links nrf_oberon from the NCS install. Its license limits use to
 	  Nordic chips.
 
+config TINYPSA_BACKEND_PORTABLE
+	bool "Portable (vendored BearSSL)"
+	depends on SOC_FAMILY_NORDIC_NRF
+	select NRF_OBERON
+	help
+	  SHA-256 and HMAC from a vendored BearSSL subset. AES and P-256
+	  still come from ocrypto until their portable versions land.
+
 endchoice
 
 config TINYPSA_KEY_SLOTS

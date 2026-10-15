@@ -63,7 +63,9 @@ obfuscation, not secrecy. Keys written by NCS trusted storage are not read.
 - `ocrypto`: Nordic's nrf_oberon, linked from the NCS install. Never vendored:
   its license limits use to Nordic chips, and it ships only as Cortex-M
   archives.
-- A portable backend (P256-Cortex-M4, p256-m, constant-time AES) is planned.
+- `portable`: vendored, permissively licensed cores, being brought in one
+  family at a time; see `src/backend/portable/README.md` for what it still
+  borrows from ocrypto.
 
 ## Tests
 
@@ -79,6 +81,9 @@ build/host/tinypsa_host_test                  # smoke tests plus all vectors
 (mkdir -p build/diffrun && cd build/diffrun && ../host/tinypsa_diff 1 50000)
 tests/host/arch/run.sh <psa-arch-tests v24.03 checkout> build/host <Mbed TLS tree>
 ```
+
+Each runs twice: over the test backend, and as `*_portable` with the
+portable backend's C families swapped in for the test backend's.
 
 - `tinypsa_host_test`: known answers per algorithm, then NIST CAVP (SHA-256,
   HMAC, CMAC, AES-ECB, CCM, GCM, ECDSA SigVer and SigGen, ECDH, HMAC_DRBG)
