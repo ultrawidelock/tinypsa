@@ -34,6 +34,7 @@ list(APPEND ZEPHYR_EXTRA_MODULES <path to tinypsa>)
 ```
 
 ```
+CONFIG_PSA_CRYPTO=y
 CONFIG_PSA_CRYPTO_PROVIDER_CUSTOM=y
 # On NCS, nrf_security must be off; OpenThread then needs its Custom choice.
 CONFIG_NRF_SECURITY=n
@@ -89,4 +90,13 @@ tests/host/arch/run.sh <psa-arch-tests v24.03 checkout> build/host <Mbed TLS tre
 - `arch/run.sh`: Arm's psa-arch-tests crypto suite. Calls tinypsa does not
   provide link to stubs returning `PSA_ERROR_NOT_SUPPORTED`.
 
-The ocrypto backend itself can only be exercised on a Nordic chip.
+The ocrypto backend runs only on a Nordic chip. `tests/target` builds the
+smoke tests and an evenly spaced sample of the vector tables (about 300 KB of
+hex, `TINYPSA_VECTOR_BUDGET`) into a Zephyr app, then checks that a persistent
+key survives a reset. Results go to RTT; reset the board once more to see the
+key check.
+
+```sh
+west build -b <board> -d build/target tests/target
+west flash -d build/target --erase
+```
