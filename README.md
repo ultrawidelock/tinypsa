@@ -100,3 +100,8 @@ key check.
 west build -b <board> -d build/target tests/target
 west flash -d build/target --erase
 ```
+
+`tests/bench` times candidate P-256, AES-GCM and SHA-256 cores against
+Oberon on a Nordic board, checking every output against Oberon's, and its
+link map gives each core's size. `tests/bench/fetch.sh` fetches the
+candidates at pinned commits.
