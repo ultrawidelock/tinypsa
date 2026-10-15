@@ -30,8 +30,8 @@ config TINYPSA_BACKEND_PORTABLE
 	depends on SOC_FAMILY_NORDIC_NRF
 	select NRF_OBERON
 	help
-	  SHA-256 and HMAC from a vendored BearSSL subset. AES and P-256
-	  still come from ocrypto until their portable versions land.
+	  SHA-256, HMAC, AES, CCM and GCM from a vendored BearSSL subset.
+	  P-256 still comes from ocrypto until its portable version lands.
 
 endchoice
 

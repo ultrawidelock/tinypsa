@@ -41,11 +41,11 @@ set(PORTABLE ${ROOT}/src/backend/portable)
 file(GLOB_RECURSE BEARSSL_SRC ${PORTABLE}/bearssl/src/*.c)
 set_source_files_properties(${BEARSSL_SRC} PROPERTIES COMPILE_OPTIONS -w)
 add_library(portable_backend STATIC
-  ${PORTABLE}/hash.c ${BEARSSL_SRC} backend_mbedtls/backend_mbedtls.c)
+  ${PORTABLE}/hash.c ${PORTABLE}/aes.c ${BEARSSL_SRC} backend_mbedtls/backend_mbedtls.c)
 target_include_directories(portable_backend PRIVATE
   ${ROOT}/src/backend ${CMAKE_CURRENT_SOURCE_DIR}/backend_mbedtls/include
   ${PORTABLE}/bearssl/inc ${PORTABLE}/bearssl/src)
-target_compile_definitions(portable_backend PRIVATE TP_TEST_PORTABLE_HASH)
+target_compile_definitions(portable_backend PRIVATE TP_TEST_PORTABLE_HASH TP_TEST_PORTABLE_AES)
 target_link_libraries(portable_backend PRIVATE mbedtls_host)
 
 # Differential test reference: Mbed TLS PSA.

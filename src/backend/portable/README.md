@@ -6,7 +6,7 @@ nothing from the toolchain or the SDK.
 | Family | Source | Upstream |
 |---|---|---|
 | SHA-256, HMAC-SHA-256 | `bearssl/` | BearSSL, MIT, commit `7bea48e5e850ab4cafbe68d3765cdaba13a86d6f` |
-| AES, CCM, GCM | ocrypto, for now (`borrowed.c`) | |
+| AES, CCM, GCM | `bearssl/` (constant-time `aes_ct`, `ghash_ctmul`) | BearSSL, as above |
 | P-256 | ocrypto, for now (`borrowed.c`) | |
 
 Vendored files are copied unmodified, keeping upstream's paths and license
