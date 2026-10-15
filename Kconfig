@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: ISC
+
+menuconfig TINYPSA
+	bool "tinypsa PSA Crypto API provider"
+	default y
+	depends on PSA_CRYPTO_PROVIDER_CUSTOM
+	select PSA_CRYPTO_CLIENT
+	select ENTROPY_GENERATOR
+	help
+	  Minimal PSA Crypto API provider: only the calls OpenThread, the
+	  Zephyr Bluetooth host and UltraWideLock make, over a vetted
+	  primitive backend.
+
+if TINYPSA
+
+choice TINYPSA_BACKEND
+	prompt "Primitive backend"
+	default TINYPSA_BACKEND_OCRYPTO
+
+config TINYPSA_BACKEND_OCRYPTO
+	bool "Nordic Oberon (ocrypto)"
+	depends on SOC_FAMILY_NORDIC_NRF
+	select NRF_OBERON
+	help
+	  Links nrf_oberon from the NCS install. Its license limits use to
+	  Nordic chips.
+
+endchoice
+
+config TINYPSA_KEY_SLOTS
+	int "Key slots"
+	default 16
+	help
+	  Keys held in RAM at once, volatile and cached persistent together.
+	  Each slot costs about 24 B plus TINYPSA_KEY_MAX_SIZE.
+
+config TINYPSA_KEY_MAX_SIZE
+	int "Largest key, in bytes"
+	default 65
+	range 32 255
+	help
+	  65 holds an uncompressed P-256 public key. Raise it only for longer
+	  HMAC keys or passwords, such as a Thread passphrase over 65 bytes.
+
+config TINYPSA_KDF_INPUT_MAX
+	int "Largest buffered KDF input, in bytes"
+	default 64
+	range 16 255
+	help
+	  Salt and info are held in the operation until output is drawn.
+	  The buffer lives on the caller's stack.
+
+config TINYPSA_DRBG_RESEED_INTERVAL
+	int "HMAC_DRBG requests between reseeds"
+	default 4096
+
+config TINYPSA_PERSISTENT_KEYS
+	bool "Persistent keys in Zephyr settings"
+	default y
+	depends on SETTINGS
+	help
+	  Keys with a persistent lifetime are stored as settings entries
+	  named tinypsa/<id>, in the clear.
+
+endif # TINYPSA

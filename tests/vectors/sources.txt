@@ -1,0 +1,17 @@
+# name  url  (sha256 in sources.sha256; refresh with fetch.sh --pin)
+wycheproof/aes_gcm_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/aes_gcm_test.json
+wycheproof/aes_ccm_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/aes_ccm_test.json
+wycheproof/aes_cmac_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/aes_cmac_test.json
+wycheproof/hmac_sha256_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/hmac_sha256_test.json
+wycheproof/hkdf_sha256_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/hkdf_sha256_test.json
+wycheproof/ecdsa_secp256r1_sha256_p1363_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/ecdsa_secp256r1_sha256_p1363_test.json
+wycheproof/ecdh_secp256r1_ecpoint_test.json https://raw.githubusercontent.com/C2SP/wycheproof/7a325932231bd7a724c791c8b0d65ea4d6d2f435/testvectors_v1/ecdh_secp256r1_ecpoint_test.json
+cavp/shabytetestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/shs/shabytetestvectors.zip
+cavp/KAT_AES.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/aes/KAT_AES.zip
+cavp/ccmtestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/mac/ccmtestvectors.zip
+cavp/gcmtestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/mac/gcmtestvectors.zip
+cavp/cmactestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/mac/cmactestvectors.zip
+cavp/hmactestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/mac/hmactestvectors.zip
+cavp/186-4ecdsatestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/dss/186-4ecdsatestvectors.zip
+cavp/ecccdhtestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/components/ecccdhtestvectors.zip
+cavp/drbgtestvectors.zip https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/drbg/drbgtestvectors.zip

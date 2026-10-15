@@ -1,0 +1,4 @@
+name: tinypsa
+build:
+  cmake: .
+  kconfig: Kconfig
