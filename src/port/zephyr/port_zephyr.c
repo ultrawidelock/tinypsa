@@ -80,11 +80,16 @@ static int read_one(const char *key, size_t len, settings_read_cb read_cb, void 
 	return 1;
 }
 
+/* PSA may be called before the application initializes settings; this is a
+ * no-op once it has. */
 int tp_store_read(uint32_t id, uint8_t *buf, size_t size)
 {
 	char name[NAME_LEN];
 	struct rd rd = { buf, size, -1 };
 
+	if (settings_subsys_init()) {
+		return -2;
+	}
 	key_name(name, id);
 	settings_load_subtree_direct(name, read_one, &rd);
 	return rd.len;
@@ -94,6 +99,9 @@ int tp_store_write(uint32_t id, const uint8_t *buf, size_t len)
 {
 	char name[NAME_LEN];
 
+	if (settings_subsys_init()) {
+		return -1;
+	}
 	key_name(name, id);
 	return settings_save_one(name, buf, len);
 }
@@ -102,6 +110,9 @@ int tp_store_erase(uint32_t id)
 {
 	char name[NAME_LEN];
 
+	if (settings_subsys_init()) {
+		return -1;
+	}
 	key_name(name, id);
 	return settings_delete(name);
 }
