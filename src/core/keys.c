@@ -305,6 +305,18 @@ static psa_status_t check_lifetime(const psa_key_attributes_t *a)
 	return PSA_SUCCESS;
 }
 
+/* A private scalar must lie in [1, n-1]. Zero is ruled out here because not
+ * every backend's check does (ocrypto accepts it). */
+static bool p256_sk_valid(const uint8_t sk[32])
+{
+	uint8_t any = 0;
+
+	for (size_t i = 0; i < 32; i++) {
+		any |= sk[i];
+	}
+	return any != 0 && tp_be_p256_sk_check(sk) == 0;
+}
+
 /*
  * Curve sizes PSA names for each family, in bits. A size outside this list
  * is malformed; a listed one tinypsa lacks is merely unsupported.
@@ -358,7 +370,7 @@ static psa_status_t check_ecc(psa_key_type_t type, const uint8_t *data, size_t l
 		return PSA_ERROR_NOT_SUPPORTED;
 	}
 	if (!pub) {
-		return tp_be_p256_sk_check(data) ? PSA_ERROR_INVALID_ARGUMENT : PSA_SUCCESS;
+		return p256_sk_valid(data) ? PSA_SUCCESS : PSA_ERROR_INVALID_ARGUMENT;
 	}
 	/* At this length only the uncompressed form 0x04 || x || y is well formed. */
 	if (data[0] != 0x04 || tp_be_p256_pk_check(&data[1])) {
@@ -548,7 +560,7 @@ psa_status_t psa_generate_key(const psa_key_attributes_t *attributes, mbedtls_sv
 	/* Rejection sampling keeps the scalar uniform in [1, n-1]. */
 	do {
 		st = tp_random(buf, len);
-	} while (st == PSA_SUCCESS && type == TP_P256_PAIR && tp_be_p256_sk_check(buf));
+	} while (st == PSA_SUCCESS && type == TP_P256_PAIR && !p256_sk_valid(buf));
 	if (st == PSA_SUCCESS) {
 		st = create(attributes, buf, len, bits, key);
 	}
