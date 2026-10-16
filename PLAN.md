@@ -64,8 +64,18 @@ With `has_d_cache` the table is scanned in flash, not copied.
 more code on the UWL lock image, which links and calls
 `mpsl_ecb_block_encrypt_extended` from `tp_be_aes_encrypt`. On the board
 it commissioned, joined Thread and unlocked over Thread and UWB, so its
-blocks are right; the risks, the stress run and the before/after timing
-below are still open.
+blocks are right; the risks and the stress run below are still open.
+
+Measured on the board (CASE bench's AES loop, 1,000 operations, 2 boots each):
+
+| Operation | Software (`aes_ct`) | Hardware (ECB) | Speedup |
+|---|---|---|---|
+| AES-128 block, key set once | 122.8 us | 11.4 us | 10.7x |
+| AES-128 block, new key each | 276.6 us | 12.1 us | 22.8x |
+| CMAC, 64 B | 892 us | 166 us | 5.4x |
+
+CASE is unchanged (about 97 ms): Matter's CCM still runs on BearSSL. Moving
+CCM onto the same ECB blocks is the next step.
 
 **Why.** BearSSL's constant-time `aes_ct` is the slowest primitive here and
 the deepest stack user after P-256: it expands the key schedule into 480 B
