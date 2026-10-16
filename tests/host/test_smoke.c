@@ -443,6 +443,8 @@ static void spake2p(void)
 	CHECK_ST(tinypsa_spake2p_p256_check_key(X), -1);
 	CHECK_ST(tinypsa_spake2p_p256_get_ZV(z, v, w0, NULL, y, X, M, L), -1);
 	X[64] ^= 1;
+	/* Neither w1 nor L: refused, not dereferenced. */
+	CHECK_ST(tinypsa_spake2p_p256_get_ZV(z, v, w0, NULL, y, X, M, NULL), -1);
 	CHECK_ST(tinypsa_spake2p_p256_get_key_share(z, w0, zero, M), -1);
 	CHECK_ST(tinypsa_spake2p_p256_get_key_share(z, zero, x, M), -1);
 

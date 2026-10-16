@@ -26,6 +26,7 @@ int tinypsa_spake2p_p256_get_key_share(uint8_t XY[65], const uint8_t w0[32], con
 /*
  * Z = xy*T and, with T = YX - w0*NM, V = w1*T on the prover (L NULL) or
  * V = xy*L on the verifier (w1 NULL). YX is checked as check_key does.
+ * Returns -1 when w1 and L are both NULL.
  */
 int tinypsa_spake2p_p256_get_ZV(uint8_t Z[65], uint8_t V[65], const uint8_t w0[32],
 				const uint8_t w1[32], const uint8_t xy[32], const uint8_t YX[65],

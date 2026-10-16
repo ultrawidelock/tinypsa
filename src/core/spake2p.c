@@ -35,9 +35,15 @@ int tinypsa_spake2p_p256_get_ZV(uint8_t Z[65], uint8_t V[65], const uint8_t w0[3
 				const uint8_t NM[65], const uint8_t L[65])
 {
 	uint8_t a[64], t[64];
-	int ret = tinypsa_spake2p_p256_check_key(YX) || tp_be_p256_mul(a, w0, &NM[1]) ||
-		  tp_be_p256_add(t, &YX[1], a, 1) || tp_be_p256_mul(&Z[1], xy, t) ||
-		  (w1 ? tp_be_p256_mul(&V[1], w1, t) : tp_be_p256_mul(&V[1], xy, &L[1]));
+	int ret;
+
+	/* Neither side named: nothing to compute V from. */
+	if (!w1 && !L) {
+		return -1;
+	}
+	ret = tinypsa_spake2p_p256_check_key(YX) || tp_be_p256_mul(a, w0, &NM[1]) ||
+	      tp_be_p256_add(t, &YX[1], a, 1) || tp_be_p256_mul(&Z[1], xy, t) ||
+	      (w1 ? tp_be_p256_mul(&V[1], w1, t) : tp_be_p256_mul(&V[1], xy, &L[1]));
 
 	Z[0] = V[0] = 0x04;
 	tp_wipe(a, sizeof(a));
