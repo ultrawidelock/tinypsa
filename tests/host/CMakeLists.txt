@@ -16,8 +16,9 @@ endif()
 
 set(ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 set(CMAKE_C_STANDARD 11)
-add_compile_options(-Wall -Wextra -Wno-unused-parameter -g -O1 -fsanitize=address,undefined)
-add_link_options(-fsanitize=address,undefined)
+set(TINYPSA_HOST_SANITIZE "address,undefined" CACHE STRING "-fsanitize= list")
+add_compile_options(-Wall -Wextra -Wno-unused-parameter -g -O1 -fsanitize=${TINYPSA_HOST_SANITIZE})
+add_link_options(-fsanitize=${TINYPSA_HOST_SANITIZE})
 
 # Mbed TLS, built once: its legacy primitives back the test backend, and its
 # PSA implementation is the reference for the differential test. rename.h
