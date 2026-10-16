@@ -351,24 +351,6 @@ int tp_be_p256_sign_hash(uint8_t sig[64], const uint8_t hash[32], const uint8_t 
 	return ec_free(&e, ret);
 }
 
-void tp_be_p256_sign_hash_det(uint8_t sig[64], const uint8_t hash[32], const uint8_t sk[32])
-{
-	struct ec e;
-	int ret;
-
-	ec_init(&e);
-	ret = mbedtls_mpi_read_binary(&e.d, sk, 32);
-	ret = ret ? ret
-		  : mbedtls_ecdsa_sign_det_ext(&e.g, &e.r, &e.s, &e.d, hash, 32,
-					       MBEDTLS_MD_SHA256, host_rng, NULL);
-	ret = ret ? ret : mbedtls_mpi_write_binary(&e.r, sig, 32);
-	ret = ret ? ret : mbedtls_mpi_write_binary(&e.s, &sig[32], 32);
-	if (ret) {
-		abort();
-	}
-	ec_free(&e, ret);
-}
-
 int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const uint8_t pk[64])
 {
 	struct ec e;

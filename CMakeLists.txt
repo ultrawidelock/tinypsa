@@ -18,11 +18,26 @@ if(CONFIG_TINYPSA)
     src/core/asym.c
     src/core/hash_mac.c
     src/core/kdf.c
+    src/core/prim.c
     src/core/keys.c
     src/core/random.c
     src/core/spake2p.c
     src/port/zephyr/port_zephyr.c
   )
+
+  if(CONFIG_TINYPSA_OPENTHREAD)
+    zephyr_library_sources(src/port/zephyr/openthread_crypto.c)
+    zephyr_library_include_directories(${ZEPHYR_OPENTHREAD_MODULE_DIR}/include)
+    # OpenThread allocates the contexts: the largest of either backend's,
+    # checked in openthread_crypto.c. 2 is OPENTHREAD_CONFIG_CRYPTO_LIB_PLATFORM.
+    zephyr_compile_definitions(
+      OPENTHREAD_CONFIG_CRYPTO_LIB=2
+      OPENTHREAD_CONFIG_AES_CONTEXT_SIZE=248
+      OPENTHREAD_CONFIG_HMAC_SHA256_CONTEXT_SIZE=280
+      OPENTHREAD_CONFIG_HKDF_CONTEXT_SIZE=32
+      OPENTHREAD_CONFIG_SHA256_CONTEXT_SIZE=200
+    )
+  endif()
 
   if(CONFIG_TINYPSA_BACKEND_OCRYPTO)
     zephyr_include_directories(src/backend/ocrypto/include)

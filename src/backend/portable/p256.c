@@ -9,7 +9,6 @@
 #include <string.h>
 
 #include <bearssl_hash.h>
-#include <bearssl_rand.h>
 
 #include "p256-cortex-m4.h"
 
@@ -130,34 +129,6 @@ int tp_be_p256_sign_hash(uint8_t sig[64], const uint8_t hash[32], const uint8_t 
 	wipe(d, sizeof(d));
 	wipe(k, sizeof(k));
 	return ok ? 0 : -1;
-}
-
-/*
- * RFC 6979 section 3.2: HMAC_DRBG instantiated with int2octets(x) ||
- * bits2octets(h1); each draw is one 32-byte output, and the generate
- * step's update is the "K = HMAC_K(V || 0x00), V = HMAC_K(V)" of step h.3.
- */
-void tp_be_p256_sign_hash_det(uint8_t sig[64], const uint8_t hash[32], const uint8_t sk[32])
-{
-	br_hmac_drbg_context drbg;
-	uint8_t seed[64], kb[32];
-	uint32_t d[8], k[8], h[8];
-
-	words(d, sk);
-	words(h, hash);
-	P256_reduce_mod_n_32bytes(h, h);
-	memcpy(seed, sk, 32);
-	bytes(&seed[32], h);
-	br_hmac_drbg_init(&drbg, &br_sha256_vtable, seed, sizeof(seed));
-	do {
-		br_hmac_drbg_generate(&drbg, kb, sizeof(kb));
-		words(k, kb);
-	} while (!sign(sig, hash, d, k));
-	wipe(&drbg, sizeof(drbg));
-	wipe(seed, sizeof(seed));
-	wipe(kb, sizeof(kb));
-	wipe(d, sizeof(d));
-	wipe(k, sizeof(k));
 }
 
 int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const uint8_t pk[64])

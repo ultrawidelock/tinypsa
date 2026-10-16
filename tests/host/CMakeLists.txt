@@ -32,7 +32,7 @@ target_compile_options(mbedtls_host PRIVATE -w)
 
 add_library(test_backend STATIC backend_mbedtls/backend_mbedtls.c)
 target_include_directories(test_backend PRIVATE
-  ${ROOT}/src/backend ${CMAKE_CURRENT_SOURCE_DIR}/backend_mbedtls/include)
+  ${ROOT}/include ${ROOT}/src/backend ${CMAKE_CURRENT_SOURCE_DIR}/backend_mbedtls/include)
 target_link_libraries(test_backend PRIVATE mbedtls_host)
 
 # The portable backend's C families over the vendored BearSSL, with the test
@@ -43,7 +43,7 @@ set_source_files_properties(${BEARSSL_SRC} PROPERTIES COMPILE_OPTIONS -w)
 add_library(portable_backend STATIC
   ${PORTABLE}/hash.c ${PORTABLE}/aes.c ${BEARSSL_SRC} backend_mbedtls/backend_mbedtls.c)
 target_include_directories(portable_backend PRIVATE
-  ${ROOT}/src/backend ${CMAKE_CURRENT_SOURCE_DIR}/backend_mbedtls/include
+  ${ROOT}/include ${ROOT}/src/backend ${CMAKE_CURRENT_SOURCE_DIR}/backend_mbedtls/include
   ${PORTABLE}/bearssl/inc ${PORTABLE}/bearssl/src)
 target_compile_definitions(portable_backend PRIVATE TP_TEST_PORTABLE_HASH TP_TEST_PORTABLE_AES)
 target_link_libraries(portable_backend PRIVATE mbedtls_host)
@@ -91,6 +91,7 @@ function(tinypsa_suite suffix backend)
     ${ROOT}/src/core/asym.c
     ${ROOT}/src/core/hash_mac.c
     ${ROOT}/src/core/kdf.c
+    ${ROOT}/src/core/prim.c
     ${ROOT}/src/core/keys.c
     ${ROOT}/src/core/random.c
     ${ROOT}/src/core/spake2p.c

@@ -7,6 +7,8 @@
  */
 #include <string.h>
 
+#include <tinypsa/prim.h>
+
 #include "internal.h"
 
 /* The algorithm checks made before the key is looked at. */
@@ -90,7 +92,7 @@ static psa_status_t sign(mbedtls_svc_key_id_t key, psa_algorithm_t alg, bool mes
 		fit_hash(hash, input, input_length);
 	}
 	if (st == PSA_SUCCESS && PSA_ALG_IS_DETERMINISTIC_ECDSA(alg)) {
-		tp_be_p256_sign_hash_det(signature, hash, k.data);
+		tinypsa_p256_sign_hash_det(signature, hash, k.data);
 	} else if (st == PSA_SUCCESS) {
 		/* A draw outside [1, n-1] is rejected by the backend; draw again. */
 		do {

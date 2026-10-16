@@ -70,4 +70,13 @@ config TINYPSA_PERSISTENT_KEYS
 	  Keys with a persistent lifetime are stored as settings entries
 	  named tinypsa/<id>, in the clear.
 
+config TINYPSA_OPENTHREAD
+	bool "OpenThread's crypto platform over tinypsa's primitives"
+	default y
+	depends on OPENTHREAD && !OPENTHREAD_CRYPTO_PSA && !OPENTHREAD_PLATFORM_KEY_REF
+	help
+	  Implements OpenThread's otPlatCrypto hooks directly, with
+	  OPENTHREAD_CONFIG_CRYPTO_LIB_PLATFORM, so OpenThread makes no PSA
+	  calls. OpenThread then keeps literal keys in its own settings.
+
 endif # TINYPSA

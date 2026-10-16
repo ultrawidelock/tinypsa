@@ -169,11 +169,6 @@ int tp_be_p256_sign_hash(uint8_t sig[64], const uint8_t hash[32], const uint8_t 
 	return ocrypto_ecdsa_p256_sign_hash(sig, hash, sk, ek);
 }
 
-void tp_be_p256_sign_hash_det(uint8_t sig[64], const uint8_t hash[32], const uint8_t sk[32])
-{
-	ocrypto_ecdsa_p256_det_sign_hash(sig, hash, sk);
-}
-
 int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const uint8_t pk[64])
 {
 	return ocrypto_ecdsa_p256_verify_hash(sig, hash, pk);
