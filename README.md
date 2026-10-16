@@ -44,6 +44,10 @@ CONFIG_OPENTHREAD_CRYPTO_PSA=y
 CONFIG_OPENTHREAD_MBEDTLS_LIB_NAME="tinypsa"
 ```
 
+`zephyr/tinypsa.conf` is these lines with a reason each, the key slots and
+the `PSA_WANT_*` a Bluetooth host, OpenThread and tinytalk image calls, for
+a sample to copy as its crypto fragment.
+
 Kconfig options (`menuconfig TINYPSA`):
 
 | Option | Default | Meaning |
