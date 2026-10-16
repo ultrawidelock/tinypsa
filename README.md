@@ -63,6 +63,15 @@ in the clear. NCS trusted storage sealed them with a key hashed from the
 device UID, which anyone holding the flash can recompute, so this drops
 obfuscation, not secrecy. Keys written by NCS trusted storage are not read.
 
+In a Bluetooth host, OpenThread and tinytalk image (`zephyr/tinypsa.conf`),
+tinytalk's keys are volatile, and the persistent ones are OpenThread's: with
+`OPENTHREAD_CRYPTO_PSA` its SRP client key, network key and PSKc, and the
+dataset copies of the last two, are entries `tinypsa/00020001` to
+`tinypsa/00020007` (OpenThread's IDs from `OPENTHREAD_PSA_ITS_NVM_OFFSET`,
+0x20000 by default), each an unencrypted record in the settings partition.
+A factory reset that clears the settings store, as the door-lock sample's
+does, removes them with everything else.
+
 ## Backends
 
 - `ocrypto`: Nordic's nrf_oberon, linked from the NCS install. Never vendored:
