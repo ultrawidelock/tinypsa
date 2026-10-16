@@ -15,6 +15,7 @@ if TINYPSA
 
 choice TINYPSA_BACKEND
 	prompt "Primitive backend"
+	default TINYPSA_BACKEND_PORTABLE if CPU_CORTEX_M4 || CPU_CORTEX_M33
 	default TINYPSA_BACKEND_OCRYPTO
 
 config TINYPSA_BACKEND_OCRYPTO
@@ -43,10 +44,10 @@ config TINYPSA_P256_FAST_BASEMULT
 	  Key generation and signing multiply by the base point through
 	  P256-Cortex-M4's precomputed-table routine instead of its generic
 	  one, which upstream says "dramatically improves performance" of
-	  both. On the UltraWideLock image it costs 1.4 KB of flash, makes
-	  Matter CASE 17% faster and takes 856 B off the signing stack. Off,
-	  OpenThread's SRP client overflows the OpenThread thread's 4 KB
-	  stack when it signs.
+	  both. On the door-lock image (decawave_dwm3001cdk, LTO on, measured
+	  2026-10-16) it costs 1,392 B of flash, makes Matter CASE 17%
+	  faster and takes 856 B off the signing stack. Off, OpenThread's SRP
+	  client overflows the OpenThread thread's 4 KB stack when it signs.
 
 config TINYPSA_AES_MPSL
 	bool "AES-128 on the nRF ECB peripheral (portable backend)"

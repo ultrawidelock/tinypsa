@@ -40,8 +40,8 @@ less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
    |---|---|---|
    | nrf_security (earlier) | 258.17 ms | 1,304 B |
    | tinypsa+ocrypto | 256.72 ms | 1,216 B |
-   | portable, fast basemult off (ships) | 117.04 ms | 2,552 B |
-   | portable, fast basemult on | 97.44 ms | 2,544 B |
+   | portable, fast basemult off | 117.04 ms | 2,552 B |
+   | portable, fast basemult on (ships since 68a1be0) | 97.44 ms | 2,544 B |
 3. **Hardware AES-128: very important.** See below.
 4. ARM QEMU suite after every portable-backend change
    (`tests/host/arm/run.sh <mbedtls>`, about 2 h).
@@ -52,7 +52,10 @@ less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
 
 `CONFIG_TINYPSA_P256_FAST_BASEMULT=y`, the default, makes keygen and
 signing use P256-Cortex-M4's precomputed-table routine for 1,392 B more
-flash on the UWL lock image. On the CASE bench it cuts 117.04 ms to 97.44 ms
+flash: 290,232 B against 288,840 B on tinylock's door-lock, RAM unchanged at
+95,712 B (decawave_dwm3001cdk, LTO on, BT host, OpenThread over PSA,
+`zephyr/tinypsa.conf`, measured 2026-10-16). The UWL lock image gave the same
+1,392 B earlier. On the CASE bench it cuts 117.04 ms to 97.44 ms
 (19.6 ms, 17%). It also takes signing's stack from 1,852 B to 996 B: off, the
 generic routine's 1,088 B frame overflowed the OpenThread thread (4,096 B)
 when the SRP client signed after the Thread join, and commissioning failed.

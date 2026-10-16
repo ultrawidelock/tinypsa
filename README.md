@@ -64,9 +64,12 @@ obfuscation, not secrecy. Keys written by NCS trusted storage are not read.
 - `ocrypto`: Nordic's nrf_oberon, linked from the NCS install. Never vendored:
   its license limits use to Nordic chips, and it ships only as Cortex-M
   archives.
-- `portable`: vendored, permissively licensed cores, being brought in one
-  family at a time; see `src/backend/portable/README.md` for what it still
-  borrows from ocrypto.
+- `portable`: vendored, permissively licensed cores, nothing from the SDK;
+  see `src/backend/portable/README.md`.
+
+The default is `portable` on a Cortex-M4 or M33, whose assembly its P-256
+needs, and `ocrypto` on any other Nordic core. Select
+`CONFIG_TINYPSA_BACKEND_OCRYPTO=y` to keep Oberon on an M4 or M33.
 
 ## Tests
 
