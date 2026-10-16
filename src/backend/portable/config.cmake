@@ -6,9 +6,9 @@
 # it knows use the FPU), and table lookups by constant-time scan: without
 # has_d_cache, the fixed-base multiply copies its 1 KB table onto the
 # caller's stack, which Bluetooth's work queues have no room for.
-# The fast fixed-base multiply is off unless CONFIG_TINYPSA_P256_FAST_BASEMULT
-# turns it on (see Kconfig): 1.4 KB of flash against slower keygen and sign.
-if(CONFIG_TINYPSA_P256_FAST_BASEMULT)
+# The fast fixed-base multiply follows CONFIG_TINYPSA_P256_FAST_BASEMULT
+# (see Kconfig), and is on for the host tests, as it ships.
+if(CONFIG_TINYPSA_P256_FAST_BASEMULT OR NOT CONFIG_TINYPSA)
   set(TINYPSA_P256M4_FAST 1)
 else()
   set(TINYPSA_P256M4_FAST 0)

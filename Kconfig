@@ -37,14 +37,16 @@ endchoice
 
 config TINYPSA_P256_FAST_BASEMULT
 	bool "Fast fixed-base P-256 multiply (portable backend)"
+	default y
 	depends on TINYPSA_BACKEND_PORTABLE
 	help
 	  Key generation and signing multiply by the base point through
 	  P256-Cortex-M4's precomputed-table routine instead of its generic
 	  one, which upstream says "dramatically improves performance" of
-	  both: shorter Matter CASE and Bluetooth key generation, for 1,416 B
-	  more flash on the UltraWideLock image (a 1 KB table plus the
-	  routine). Off by default to save that flash.
+	  both. On the UltraWideLock image it costs 1.4 KB of flash, makes
+	  Matter CASE 17% faster and takes 856 B off the signing stack. Off,
+	  OpenThread's SRP client overflows the OpenThread thread's 4 KB
+	  stack when it signs.
 
 config TINYPSA_AES_MPSL
 	bool "AES-128 on the nRF ECB peripheral (portable backend)"

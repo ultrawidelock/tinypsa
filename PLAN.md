@@ -14,17 +14,18 @@ portable backend. One commit per step.
 | 5 | SPAKE2+ group operations | d9b292c |
 | 6a | Primitives past the PSA layer (`prim.h`), OpenThread crypto platform | 4af64e0 |
 | 6b | Stack: HMAC over SHA-256, one DRBG HMAC context, `has_d_cache` | 11a0794 |
-| 6c | Fast fixed-base multiply behind `CONFIG_TINYPSA_P256_FAST_BASEMULT`, off | ba4e291 |
+| 6c | Fast fixed-base multiply behind `CONFIG_TINYPSA_P256_FAST_BASEMULT`, now on | ba4e291 |
 
 On the UWL lock image (DWM3001CDK, release), against nrf_security: 18.6 KB
 less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
 
 ## Next
 
-1. **Board pass** on the UWL lock image: boot, Matter commissioning over
-   BLE, Thread join, CASE, a walk-up unlock, LE Secure Connections pairing,
-   DFU over GATT and over CoC. Devices are recommissioned on upgrade; no
-   key migration.
+1. **Board pass** on the UWL lock image, with fast basemult and hardware
+   AES on. Passed 2026-10-16: boot, Matter commissioning over BLE, Thread
+   join, lock and unlock from Apple Home, a UWB walk-up unlock. Left: LE
+   Secure Connections pairing, DFU over GATT and over CoC. Devices are
+   recommissioned on upgrade; no key migration.
 2. **Backend decision (portable vs ocrypto)** by the CASE bench on the
    reader image: `make reader CDK_READER_BUILD=<dir>
    "CDK_READER_ARGS=-DEXTRA_CONF_FILE=<bench.conf> $(CDK_SIGN)"`, with
@@ -47,21 +48,24 @@ less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
 5. Push tinypsa once the ARM suite passes; open the UWL PR after the board
    pass.
 
-## Fast fixed-base P-256 multiply (off)
+## Fast fixed-base P-256 multiply (on)
 
-`CONFIG_TINYPSA_P256_FAST_BASEMULT=y` makes keygen and signing use
-P256-Cortex-M4's precomputed-table routine, which upstream says
-"dramatically improves performance", for 1,416 B more flash on the UWL image.
-On the CASE bench it cuts 117.04 ms to 97.44 ms (19.6 ms, 17%). It is off
-to save that flash. Turn it on if flash stops being the constraint. Stack is unaffected:
-with `has_d_cache` the table is scanned in flash, not copied.
+`CONFIG_TINYPSA_P256_FAST_BASEMULT=y`, the default, makes keygen and
+signing use P256-Cortex-M4's precomputed-table routine for 1,392 B more
+flash on the UWL lock image. On the CASE bench it cuts 117.04 ms to 97.44 ms
+(19.6 ms, 17%). It also takes signing's stack from 1,852 B to 996 B: off, the
+generic routine's 1,088 B frame overflowed the OpenThread thread (4,096 B)
+when the SRP client signed after the Thread join, and commissioning failed.
+With `has_d_cache` the table is scanned in flash, not copied.
 
 ## Hardware AES-128 (very important)
 
 **Status.** Built behind `CONFIG_TINYPSA_AES_MPSL`, off by default: 40 B
 more code on the UWL lock image, which links and calls
-`mpsl_ecb_block_encrypt_extended` from `tp_be_aes_encrypt`. Not yet run on
-the board; the risks and the check below are still open.
+`mpsl_ecb_block_encrypt_extended` from `tp_be_aes_encrypt`. On the board
+it commissioned, joined Thread and unlocked over Thread and UWB, so its
+blocks are right; the risks, the stress run and the before/after timing
+below are still open.
 
 **Why.** BearSSL's constant-time `aes_ct` is the slowest primitive here and
 the deepest stack user after P-256: it expands the key schedule into 480 B
