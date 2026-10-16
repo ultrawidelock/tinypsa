@@ -95,7 +95,10 @@ portable backend's C families swapped in for the test backend's.
 
 - `tinypsa_host_test`: known answers per algorithm, then NIST CAVP (SHA-256,
   HMAC, CMAC, AES-ECB, CCM, GCM, ECDSA SigVer and SigGen, ECDH, HMAC_DRBG)
-  and Wycheproof (GCM, CCM, CMAC, HMAC, HKDF, ECDSA P1363, ECDH).
+  and Wycheproof (GCM, CCM, CMAC, HMAC, HKDF, ECDSA P1363, ECDH). Given
+  tinytalk's `tests/host/test_matter_pase_sm.c` as its argument, it also
+  replays tinytalk's recorded PASE exchange through the four SPAKE2+ calls,
+  in tinytalk's order and with its arguments; without it, that is skipped.
 - `tinypsa_diff`: differential test against Mbed TLS 3.6 PSA, comparing every
   status and every deterministic output over random call sequences. The few
   places tinypsa differs on purpose are counted as "by design" with their

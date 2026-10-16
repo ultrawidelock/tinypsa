@@ -11,6 +11,7 @@ int test_checks;
 
 void test_smoke(void);
 void test_vectors(void);
+void test_pase_replay(const char *path);
 
 void test_fail(const char *file, int line, const char *what)
 {
@@ -52,7 +53,7 @@ size_t hex(uint8_t *out, size_t size, const char *s)
 	return n;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
 	uint8_t b[4];
 
@@ -62,6 +63,9 @@ int main(void)
 	test_smoke();
 #ifdef TINYPSA_HAVE_VECTORS
 	test_vectors();
+#endif
+#ifdef TINYPSA_PASE_REPLAY
+	test_pase_replay(argc > 1 ? argv[1] : NULL);
 #endif
 	printf("%d checks, %d failures\n", test_checks, test_failures);
 	return test_failures != 0;

@@ -10,7 +10,7 @@
 
 #include <psa/crypto.h>
 
-int test_host_main(void);
+int test_host_main(int argc, char **argv);
 
 #define REBOOT_KEY_ID 0x2F001
 
@@ -24,7 +24,7 @@ int main(void)
 	uint8_t out[sizeof(reboot_key)];
 	size_t n = 0;
 	psa_status_t st;
-	int failed = test_host_main();
+	int failed = test_host_main(0, NULL);
 
 	st = psa_export_key(REBOOT_KEY_ID, out, sizeof(out), &n);
 	if (st == PSA_ERROR_INVALID_HANDLE) {
