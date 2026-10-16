@@ -29,11 +29,18 @@ less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
    reader image: `make reader CDK_READER_BUILD=<dir>
    "CDK_READER_ARGS=-DEXTRA_CONF_FILE=<bench.conf> $(CDK_SIGN)"`, with
    bench.conf setting `ULTRAWIDELOCK_CASE_BENCH`, `INIT_STACKS`,
-   `THREAD_STACK_INFO` and `PSA_WANT_ALG_CCM`; one result line on RTT per
+   `THREAD_STACK_INFO`, `PSA_WANT_ALG_CCM` and `TINYPSA_KEY_SLOTS=16` (the
+   bench holds 9 PSA keys at once); one result line on RTT per
    boot. Three images: portable with fast basemult off (shipping), portable
    with it on, ocrypto (`NRF_OBERON`, `TINYPSA_BACKEND_OCRYPTO`).
-   Reference: nrf_security 258.17 ms, tinypsa+ocrypto 256.80 ms. Ship
-   portable if it is within about 10% of those.
+   **Decided: portable.** 2026-10-16, 4 boots each:
+
+   | Image | CASE crypto | Stack peak |
+   |---|---|---|
+   | nrf_security (earlier) | 258.17 ms | 1,304 B |
+   | tinypsa+ocrypto | 256.72 ms | 1,216 B |
+   | portable, fast basemult off (ships) | 117.04 ms | 2,552 B |
+   | portable, fast basemult on | 97.44 ms | 2,544 B |
 3. **Hardware AES-128: very important.** See below.
 4. ARM QEMU suite after every portable-backend change
    (`tests/host/arm/run.sh <mbedtls>`, about 2 h).
@@ -45,8 +52,8 @@ less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
 `CONFIG_TINYPSA_P256_FAST_BASEMULT=y` makes keygen and signing use
 P256-Cortex-M4's precomputed-table routine, which upstream says
 "dramatically improves performance", for 1,416 B more flash on the UWL image.
-It is off to save that flash. Turn it on if the CASE bench shows signing
-dominating, or if flash stops being the constraint. Stack is unaffected:
+On the CASE bench it cuts 117.04 ms to 97.44 ms (19.6 ms, 17%). It is off
+to save that flash. Turn it on if flash stops being the constraint. Stack is unaffected:
 with `has_d_cache` the table is scanned in flash, not copied.
 
 ## Hardware AES-128 (very important)
