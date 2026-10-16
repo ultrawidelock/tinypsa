@@ -48,6 +48,21 @@ target_include_directories(portable_backend PRIVATE
 target_compile_definitions(portable_backend PRIVATE TP_TEST_PORTABLE_HASH TP_TEST_PORTABLE_AES)
 target_link_libraries(portable_backend PRIVATE mbedtls_host)
 
+# Its P-256 is Cortex-M assembly, so only a 32-bit ARM host runs it
+# (tests/host/arm/run.sh); elsewhere the test backend's stands in.
+option(TINYPSA_HOST_P256_ASM "Test the portable P-256 (32-bit ARM hosts only)" OFF)
+if(TINYPSA_HOST_P256_ASM)
+  enable_language(ASM)
+  include(${PORTABLE}/config.cmake)
+  set(P256M4 ${PORTABLE}/p256-cortex-m4)
+  set(P256M4_SRC ${P256M4}/p256-cortex-m4.c ${P256M4}/p256-cortex-m4-asm-gcc.S)
+  set_source_files_properties(${P256M4_SRC} PROPERTIES COMPILE_OPTIONS -w)
+  target_sources(portable_backend PRIVATE ${PORTABLE}/p256.c ${P256M4_SRC})
+  target_include_directories(portable_backend PRIVATE ${P256M4})
+  target_compile_definitions(portable_backend PRIVATE TP_TEST_PORTABLE_P256
+    ${TINYPSA_P256M4_DEFINES})
+endif()
+
 # Differential test reference: Mbed TLS PSA.
 add_library(ref_shim STATIC diff/ref_shim.c)
 target_link_libraries(ref_shim PRIVATE mbedtls_host)

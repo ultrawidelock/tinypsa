@@ -3,8 +3,8 @@
  * Test-only backend over Mbed TLS's legacy crypto, so the core runs on a
  * host: ocrypto exists only as Cortex-M archives. Never shipped. Built with
  * mbedtls_legacy_config.h, so this file must not include PSA headers.
- * TP_TEST_PORTABLE_HASH and TP_TEST_PORTABLE_AES each leave a family out, so
- * the portable backend's own C version can be tested in its place.
+ * TP_TEST_PORTABLE_HASH, _AES and _P256 each leave a family out, so the
+ * portable backend's own version can be tested in its place.
  */
 #include <stdlib.h>
 #include <string.h>
@@ -227,6 +227,7 @@ void tp_be_ctx_free(void *ctx, size_t size)
 #endif /* TP_TEST_PORTABLE_AES */
 
 /* ---- P-256 ---------------------------------------------------------------- */
+#ifndef TP_TEST_PORTABLE_P256
 
 static int host_rng(void *p, unsigned char *out, size_t n)
 {
@@ -378,3 +379,4 @@ int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const 
 	ret = ret ? ret : mbedtls_ecdsa_verify(&e.g, hash, 32, &e.q, &e.r, &e.s);
 	return ec_free(&e, ret);
 }
+#endif /* TP_TEST_PORTABLE_P256 */
