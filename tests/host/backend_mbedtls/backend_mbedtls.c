@@ -248,7 +248,7 @@ static int fixed_rng(void *p, unsigned char *out, size_t n)
 
 struct ec {
 	mbedtls_ecp_group g;
-	mbedtls_ecp_point q;
+	mbedtls_ecp_point q, t;
 	mbedtls_mpi d, r, s;
 };
 
@@ -256,6 +256,7 @@ static void ec_init(struct ec *e)
 {
 	mbedtls_ecp_group_init(&e->g);
 	mbedtls_ecp_point_init(&e->q);
+	mbedtls_ecp_point_init(&e->t);
 	mbedtls_mpi_init(&e->d);
 	mbedtls_mpi_init(&e->r);
 	mbedtls_mpi_init(&e->s);
@@ -266,6 +267,7 @@ static int ec_free(struct ec *e, int ret)
 {
 	mbedtls_ecp_group_free(&e->g);
 	mbedtls_ecp_point_free(&e->q);
+	mbedtls_ecp_point_free(&e->t);
 	mbedtls_mpi_free(&e->d);
 	mbedtls_mpi_free(&e->r);
 	mbedtls_mpi_free(&e->s);
@@ -378,5 +380,64 @@ int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const 
 	ret = ret ? ret : mbedtls_mpi_read_binary(&e.s, &sig[32], 32);
 	ret = ret ? ret : mbedtls_ecdsa_verify(&e.g, hash, 32, &e.q, &e.r, &e.s);
 	return ec_free(&e, ret);
+}
+
+static int write_point(struct ec *e, uint8_t r[64])
+{
+	uint8_t buf[65];
+	size_t n;
+	int ret = mbedtls_ecp_point_write_binary(&e->g, &e->q, MBEDTLS_ECP_PF_UNCOMPRESSED, &n,
+						 buf, sizeof(buf));
+
+	if (!ret) {
+		memcpy(r, &buf[1], 64);
+	}
+	return ret;
+}
+
+int tp_be_p256_mul(uint8_t r[64], const uint8_t k[32], const uint8_t p[64])
+{
+	struct ec e;
+	int ret;
+
+	ec_init(&e);
+	ret = mbedtls_mpi_read_binary(&e.d, k, 32);
+	ret = ret ? ret : read_point(&e, p);
+	ret = ret ? ret : mbedtls_ecp_copy(&e.t, &e.q);
+	ret = ret ? ret : mbedtls_ecp_mul(&e.g, &e.q, &e.d, &e.t, host_rng, NULL);
+	ret = ret ? ret : write_point(&e, r);
+	return ec_free(&e, ret);
+}
+
+int tp_be_p256_add(uint8_t r[64], const uint8_t p[64], const uint8_t q[64], int sub)
+{
+	struct ec e;
+	int ret;
+
+	ec_init(&e);
+	ret = read_point(&e, q);
+	ret = ret ? ret : mbedtls_ecp_copy(&e.t, &e.q);
+	ret = ret ? ret : read_point(&e, p);
+	ret = ret ? ret : mbedtls_mpi_lset(&e.r, 1);
+	ret = ret ? ret : mbedtls_mpi_lset(&e.s, sub ? -1 : 1);
+	ret = ret ? ret : mbedtls_ecp_muladd(&e.g, &e.q, &e.r, &e.q, &e.s, &e.t);
+	ret = ret ? ret : mbedtls_ecp_is_zero(&e.q);
+	ret = ret ? ret : write_point(&e, r);
+	return ec_free(&e, ret);
+}
+
+void tp_be_p256_reduce(uint8_t x[32], const uint8_t *xs, size_t xs_len)
+{
+	struct ec e;
+	int ret;
+
+	ec_init(&e);
+	ret = mbedtls_mpi_read_binary(&e.d, xs, xs_len);
+	ret = ret ? ret : mbedtls_mpi_mod_mpi(&e.d, &e.d, &e.g.N);
+	ret = ret ? ret : mbedtls_mpi_write_binary(&e.d, x, 32);
+	if (ret) {
+		abort();
+	}
+	ec_free(&e, ret);
 }
 #endif /* TP_TEST_PORTABLE_P256 */

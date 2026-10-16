@@ -93,6 +93,7 @@ function(tinypsa_suite suffix backend)
     ${ROOT}/src/core/kdf.c
     ${ROOT}/src/core/keys.c
     ${ROOT}/src/core/random.c
+    ${ROOT}/src/core/spake2p.c
     port_host.c)
   target_include_directories(tinypsa_host${suffix} PUBLIC
     ${ROOT}/include ${TINYPSA_MBEDTLS_DIR}/include

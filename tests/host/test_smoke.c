@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include <psa/crypto.h>
+#include <tinypsa/spake2p_p256.h>
 
 #include "internal.h"
 #include "test.h"
@@ -388,6 +389,81 @@ static void keys(void)
 	CHECK_ST(psa_import_key(&a, zero, 32, &id), PSA_ERROR_INVALID_ARGUMENT);
 }
 
+static void reduce_is(const uint8_t *xs, size_t len, const char *want_hex)
+{
+	uint8_t want[32], got[32];
+
+	HEX(want, want_hex);
+	tinypsa_spake2p_p256_reduce(got, xs, len);
+	CHECK(!memcmp(got, want, 32));
+}
+
+static void spake2p(void)
+{
+	/* RFC 9383 appendix C, SPAKE2+-P256-SHA256-HKDF-SHA256-HMAC-SHA256. */
+	uint8_t w0[32], w1[32], x[32], y[32], L[65], M[65], N[65], X[65], Y[65], Z[65], V[65];
+	uint8_t z[65], v[65], two[32] = { [31] = 2 }, zero[32] = { 0 }, xs[64];
+
+	HEX(w0, "bb8e1bbcf3c48f62c08db243652ae55d3e5586053fca77102994f23ad95491b3");
+	HEX(w1, "7e945f34d78785b8a3ef44d0df5a1a97d6b3b460409a345ca7830387a74b1dba");
+	HEX(x, "d1232c8e8693d02368976c174e2088851b8365d0d79a9eee709c6a05a2fad539");
+	HEX(y, "717a72348a182085109c8d3917d6c43d59b224dc6a7fc4f0483232fa6516d8b3");
+	HEX(L, "04eb7c9db3d9a9eb1f8adab81b5794c1f13ae3e225efbe91ea487425854c7fc00f"
+	       "00bfedcbd09b2400142d40a14f2064ef31dfaa903b91d1faea7093d835966efd");
+	HEX(M, "04886e2f97ace46e55ba9dd7242579f2993b64e16ef3dcab95afd497333d8fa12f"
+	       "5ff355163e43ce224e0b0e65ff02ac8e5c7be09419c785e0ca547d55a12e2d20");
+	HEX(N, "04d8bbd6c639c62937b04d997f38c3770719c629d7014d49a24b4f98baa1292b49"
+	       "07d60aa6bfade45008a636337f5168c64d9bd36034808cd564490b1e656edbe7");
+	HEX(X, "04ef3bd051bf78a2234ec0df197f7828060fe9856503579bb1733009042c15c0c1"
+	       "de127727f418b5966afadfdd95a6e4591d171056b333dab97a79c7193e341727");
+	HEX(Y, "04c0f65da0d11927bdf5d560c69e1d7d939a05b0e88291887d679fcadea75810fb"
+	       "5cc1ca7494db39e82ff2f50665255d76173e09986ab46742c798a9a68437b048");
+	HEX(Z, "04bbfce7dd7f277819c8da21544afb7964705569bdf12fb92aa388059408d50091"
+	       "a0c5f1d3127f56813b5337f9e4e67e2ca633117a4fbd559946ab474356c41839");
+	HEX(V, "0458bf27c6bca011c9ce1930e8984a797a3419797b936629a5a937cf2f11c8b951"
+	       "4b82b993da8a46e664f23db7c01edc87faa530db01c2ee405230b18997f16b68");
+
+	CHECK_ST(tinypsa_spake2p_p256_get_key_share(z, w0, x, M), 0);
+	CHECK(!memcmp(z, X, 65));
+	CHECK_ST(tinypsa_spake2p_p256_get_key_share(z, w0, y, N), 0);
+	CHECK(!memcmp(z, Y, 65));
+	/* The prover's Z and V, then the verifier's. */
+	CHECK_ST(tinypsa_spake2p_p256_get_ZV(z, v, w0, w1, x, Y, N, NULL), 0);
+	CHECK(!memcmp(z, Z, 65) && !memcmp(v, V, 65));
+	memset(z, 0, sizeof(z));
+	memset(v, 0, sizeof(v));
+	CHECK_ST(tinypsa_spake2p_p256_get_ZV(z, v, w0, NULL, y, X, M, L), 0);
+	CHECK(!memcmp(z, Z, 65) && !memcmp(v, V, 65));
+
+	CHECK_ST(tinypsa_spake2p_p256_check_key(X), 0);
+	X[0] = 0x02;
+	CHECK_ST(tinypsa_spake2p_p256_check_key(X), -1);
+	X[0] = 0x04;
+	X[64] ^= 1;
+	CHECK_ST(tinypsa_spake2p_p256_check_key(X), -1);
+	CHECK_ST(tinypsa_spake2p_p256_get_ZV(z, v, w0, NULL, y, X, M, L), -1);
+	X[64] ^= 1;
+	CHECK_ST(tinypsa_spake2p_p256_get_key_share(z, w0, zero, M), -1);
+	CHECK_ST(tinypsa_spake2p_p256_get_key_share(z, zero, x, M), -1);
+
+	/* P - P is the point at infinity; P + P doubles. */
+	CHECK_ST(tp_be_p256_add(z, &X[1], &X[1], 1), -1);
+	CHECK_ST(tp_be_p256_add(z, &X[1], &X[1], 0), 0);
+	CHECK_ST(tp_be_p256_mul(v, two, &X[1]), 0);
+	CHECK(!memcmp(z, v, 64));
+
+	/* Matter's 40-byte w0s, a value just over n, then 2^264 - 1, 2^512 - 1 and nothing. */
+	reduce_is(xs, HEX(xs, "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+			      "3e23e8160039594a"),
+		  "c4ddef7d05709d70dca063c1efb97265530064b8da290138b97443b92ff5845d");
+	reduce_is(xs, HEX(xs, "ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632556"),
+		  "0000000000000000000000000000000000000000000000000000000000000005");
+	memset(xs, 0xff, sizeof(xs));
+	reduce_is(xs, 33, "000000ffffffff00000000000000004319055258e8617b0c46353d039cdaaeff");
+	reduce_is(xs, 64, "66e12d94f3d956202845b2392b6bec594699799c49bd6fa683244c95be79eea1");
+	reduce_is(xs, 0, "0000000000000000000000000000000000000000000000000000000000000000");
+}
+
 void test_smoke(void)
 {
 	sha256();
@@ -398,6 +474,7 @@ void test_smoke(void)
 	pbkdf2();
 	p256();
 	ecdh();
+	spake2p();
 	drbg();
 	keys();
 }

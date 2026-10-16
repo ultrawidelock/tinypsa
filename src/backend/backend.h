@@ -62,4 +62,14 @@ int tp_be_p256_sign_hash(uint8_t sig[64], const uint8_t hash[32], const uint8_t 
 void tp_be_p256_sign_hash_det(uint8_t sig[64], const uint8_t hash[32], const uint8_t sk[32]);
 int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const uint8_t pk[64]);
 
+/*
+ * For SPAKE2+. mul gives r = k*P and fails unless 0 < k < n and P is on the
+ * curve. add gives r = P + Q, or P - Q when sub, for P and Q on the curve,
+ * and fails when that is the point at infinity. reduce gives x = xs mod n
+ * for a big-endian xs of any length.
+ */
+int tp_be_p256_mul(uint8_t r[64], const uint8_t k[32], const uint8_t p[64]);
+int tp_be_p256_add(uint8_t r[64], const uint8_t p[64], const uint8_t q[64], int sub);
+void tp_be_p256_reduce(uint8_t x[32], const uint8_t *xs, size_t xs_len);
+
 #endif

@@ -4,8 +4,8 @@ A minimal PSA Crypto API provider for Zephyr. It implements the 42 PSA calls,
 and the two Mbed TLS ASN.1 readers, that OpenThread, the Zephyr Bluetooth host
 and UltraWideLock make, over a vetted primitive backend. It adds no crypto
 algorithm of its own beyond standard constructions over those primitives:
-CMAC (SP 800-38B), HKDF (RFC 5869), PBKDF2 with the RFC 4615 PRF, and
-HMAC_DRBG (SP 800-90A).
+CMAC (SP 800-38B), HKDF (RFC 5869), PBKDF2 with the RFC 4615 PRF,
+HMAC_DRBG (SP 800-90A), and SPAKE2+'s group operations (RFC 9383).
 
 License: ISC.
 
@@ -21,6 +21,7 @@ License: ISC.
 | Signature | ECDSA P-256 with SHA-256, randomized and deterministic (RFC 6979) |
 | Key agreement | raw ECDH P-256 |
 | Key derivation | HKDF-SHA-256, PBKDF2-AES-CMAC-PRF-128 |
+| PAKE | SPAKE2+ P-256 group operations, outside the PSA API: `tinypsa_spake2p_p256_*` in `<tinypsa/spake2p_p256.h>`, with ocrypto's contract |
 | Random | HMAC_DRBG seeded from the `zephyr,entropy` device |
 
 Anything else returns `PSA_ERROR_NOT_SUPPORTED`.

@@ -5,7 +5,6 @@
 # calls, and no FPU registers as scratch (Zephyr saves those only for
 # threads it knows use the FPU).
 set(TINYPSA_P256M4_DEFINES
-  include_p256_raw_scalarmult_generic=0
   include_p256_raw_scalarmult_base=0
   include_p256_to_octet_string_compressed=0
   include_p256_to_octet_string_hybrid=0

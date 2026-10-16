@@ -8,11 +8,14 @@
 #include <ocrypto_aes_ccm.h>
 #include <ocrypto_aes_ecb.h>
 #include <ocrypto_aes_gcm.h>
+#include <ocrypto_curve_p256.h>
 #include <ocrypto_ecdh_p256.h>
 #include <ocrypto_ecdsa_p256.h>
 #include <ocrypto_ecdsa_p256_det_sign.h>
 #include <ocrypto_hmac_sha256.h>
+#include <ocrypto_sc_p256.h>
 #include <ocrypto_sha256.h>
+#include <ocrypto_spake2p_p256.h>
 
 #include "backend.h"
 #include "tinypsa_backend_ctx.h"
@@ -174,4 +177,47 @@ void tp_be_p256_sign_hash_det(uint8_t sig[64], const uint8_t hash[32], const uin
 int tp_be_p256_verify_hash(const uint8_t sig[64], const uint8_t hash[32], const uint8_t pk[64])
 {
 	return ocrypto_ecdsa_p256_verify_hash(sig, hash, pk);
+}
+
+int tp_be_p256_mul(uint8_t r[64], const uint8_t k[32], const uint8_t p[64])
+{
+	ocrypto_cp_p256 a, b;
+	ocrypto_sc_p256 s;
+
+	/* scalarmult fails for k = 0, from32bytes for k >= n. */
+	if (ocrypto_curve_p256_from64bytes(&a, p) || ocrypto_sc_p256_from32bytes(&s, k) ||
+	    ocrypto_curve_p256_scalarmult(&b, &a, &s)) {
+		return -1;
+	}
+	ocrypto_curve_p256_to64bytes(r, &b);
+	return 0;
+}
+
+/*
+ * ocrypto declares no point addition, so this takes it from its SPAKE2+:
+ * get_ZV gives Z = xy*(YX - w0*NM), here with xy = 1 and w0 = 1 for P - Q
+ * or n - 1 for P + Q. Its V, with w1 = 1, is a spare copy of Z.
+ */
+int tp_be_p256_add(uint8_t r[64], const uint8_t p[64], const uint8_t q[64], int sub)
+{
+	static const uint8_t one[32] = { [31] = 1 };
+	static const uint8_t n_minus_1[32] = {
+		0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xbc, 0xe6, 0xfa, 0xad, 0xa7, 0x17,
+		0x9e, 0x84, 0xf3, 0xb9, 0xca, 0xc2, 0xfc, 0x63, 0x25, 0x50,
+	};
+	uint8_t z[65], v[65], yx[65] = { 0x04 }, nm[65] = { 0x04 };
+
+	memcpy(&yx[1], p, 64);
+	memcpy(&nm[1], q, 64);
+	if (ocrypto_spake2p_p256_get_ZV(z, v, sub ? one : n_minus_1, one, one, yx, nm, NULL)) {
+		return -1;
+	}
+	memcpy(r, &z[1], 64);
+	return 0;
+}
+
+void tp_be_p256_reduce(uint8_t x[32], const uint8_t *xs, size_t xs_len)
+{
+	ocrypto_spake2p_p256_reduce(x, xs, xs_len);
 }

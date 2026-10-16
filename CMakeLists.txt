@@ -20,6 +20,7 @@ if(CONFIG_TINYPSA)
     src/core/kdf.c
     src/core/keys.c
     src/core/random.c
+    src/core/spake2p.c
     src/port/zephyr/port_zephyr.c
   )
 
