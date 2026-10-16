@@ -4,8 +4,7 @@
 # is at /src and Mbed TLS at /mbedtls. Installs a 32-bit ARM cross
 # toolchain and QEMU user mode first. Under QEMU everything runs several
 # times slower, so the ARM run leaves AddressSanitizer to the native host run
-# (this one is for the assembly), takes 10,000 steps per seed and runs the
-# seeds in parallel.
+# (this one is for the assembly) and runs the seeds in parallel.
 set -eu
 
 apt-get update -qq
@@ -28,7 +27,7 @@ pids=
 for seed in 1 2 3 4; do
 	d="$b/diffrun$seed"
 	rm -rf "$d" && mkdir -p "$d"
-	(cd "$d" && run ../tinypsa_diff_portable "$seed" 10000) &
+	(cd "$d" && run ../tinypsa_diff_portable "$seed" 50000) &
 	pids="$pids $!"
 done
 rc=0
