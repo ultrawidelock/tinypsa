@@ -35,6 +35,17 @@ config TINYPSA_BACKEND_PORTABLE
 
 endchoice
 
+config TINYPSA_P256_FAST_BASEMULT
+	bool "Fast fixed-base P-256 multiply (portable backend)"
+	depends on TINYPSA_BACKEND_PORTABLE
+	help
+	  Key generation and signing multiply by the base point through
+	  P256-Cortex-M4's precomputed-table routine instead of its generic
+	  one, which upstream says "dramatically improves performance" of
+	  both: shorter Matter CASE and Bluetooth key generation, for 1,416 B
+	  more flash on the UltraWideLock image (a 1 KB table plus the
+	  routine). Off by default to save that flash.
+
 config TINYPSA_KEY_SLOTS
 	int "Key slots"
 	default 16
