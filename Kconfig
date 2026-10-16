@@ -46,6 +46,16 @@ config TINYPSA_P256_FAST_BASEMULT
 	  more flash on the UltraWideLock image (a 1 KB table plus the
 	  routine). Off by default to save that flash.
 
+config TINYPSA_AES_MPSL
+	bool "AES-128 on the nRF ECB peripheral (portable backend)"
+	depends on TINYPSA_BACKEND_PORTABLE && MPSL_BUILD_TYPE_LIB
+	help
+	  Single-block AES-128 (ECB, CMAC, OpenThread's AES) runs on the ECB
+	  peripheral through MPSL, which shares it with the Bluetooth
+	  controller and the 802.15.4 driver, instead of BearSSL's
+	  constant-time software AES. CCM, GCM and 256-bit keys stay in
+	  software. Off by default: see PLAN.md for what is still unverified.
+
 config TINYPSA_KEY_SLOTS
 	int "Key slots"
 	default 16

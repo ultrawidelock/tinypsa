@@ -6,6 +6,10 @@
  *
  * BearSSL wants all associated data before any payload (br_*_flip); the
  * core guarantees that order, and the first payload or final call flips.
+ *
+ * With CONFIG_TINYPSA_AES_MPSL, single-block AES-128 runs on the nRF ECB
+ * peripheral through MPSL, which shares it with the radio drivers; CCM, GCM
+ * and 256-bit keys stay on BearSSL.
  */
 #include <string.h>
 
@@ -15,6 +19,18 @@
 
 #include "backend.h"
 #include "tinypsa_backend_ctx.h"
+
+#ifdef CONFIG_TINYPSA_AES_MPSL
+#include <mpsl_ecb.h>
+
+/* The raw key, behind a NULL where BearSSL's context has its vtable. */
+struct aes_hw {
+	const void *none;
+	uint8_t key[16];
+};
+
+_Static_assert(sizeof(struct aes_hw) <= TINYPSA_AES_CTX_SIZE, "aes hw ctx");
+#endif
 
 struct ccm {
 	br_aes_ct_ctrcbc_keys aes;
@@ -34,6 +50,15 @@ _Static_assert(sizeof(struct gcm) <= TINYPSA_GCM_CTX_SIZE, "gcm ctx");
 
 void tp_be_aes_init(void *ctx, const uint8_t *key, size_t key_len)
 {
+#ifdef CONFIG_TINYPSA_AES_MPSL
+	if (key_len == 16) {
+		struct aes_hw *h = ctx;
+
+		h->none = NULL;
+		memcpy(h->key, key, 16);
+		return;
+	}
+#endif
 	br_aes_ct_cbcenc_init(ctx, key, key_len);
 }
 
@@ -42,6 +67,18 @@ void tp_be_aes_encrypt(void *ctx, uint8_t *out, const uint8_t *in, size_t len)
 {
 	uint8_t iv[16];
 
+#ifdef CONFIG_TINYPSA_AES_MPSL
+	const struct aes_hw *h = ctx;
+
+	if (h->none == NULL) {
+		/* MPSL copies each block to RAM first, so out may alias in. */
+		for (size_t i = 0; i < len; i += 16) {
+			mpsl_ecb_block_encrypt_extended(h->key, &in[i], &out[i],
+							MPSL_ECB_NO_FLAGS);
+		}
+		return;
+	}
+#endif
 	memmove(out, in, len);
 	for (size_t i = 0; i < len; i += 16) {
 		memset(iv, 0, sizeof(iv));

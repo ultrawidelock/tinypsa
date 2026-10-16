@@ -58,6 +58,11 @@ with `has_d_cache` the table is scanned in flash, not copied.
 
 ## Hardware AES-128 (very important)
 
+**Status.** Built behind `CONFIG_TINYPSA_AES_MPSL`, off by default: 40 B
+more code on the UWL lock image, which links and calls
+`mpsl_ecb_block_encrypt_extended` from `tp_be_aes_encrypt`. Not yet run on
+the board; the risks and the check below are still open.
+
 **Why.** BearSSL's constant-time `aes_ct` is the slowest primitive here and
 the deepest stack user after P-256: it expands the key schedule into 480 B
 on every call (`br_aes_ct_cbcenc_run`, 576 B frame). Every AES-128 user in
