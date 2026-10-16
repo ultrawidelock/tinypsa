@@ -28,14 +28,20 @@ if(CONFIG_TINYPSA)
   if(CONFIG_TINYPSA_OPENTHREAD)
     zephyr_library_sources(src/port/zephyr/openthread_crypto.c)
     zephyr_library_include_directories(${ZEPHYR_OPENTHREAD_MODULE_DIR}/include)
-    # OpenThread allocates the contexts: the largest of either backend's,
-    # checked in openthread_crypto.c. 2 is OPENTHREAD_CONFIG_CRYPTO_LIB_PLATFORM.
+    # OpenThread allocates the contexts, sized from the backend's
+    # tinypsa_backend_ctx.h and checked in openthread_crypto.c.
+    # 2 is OPENTHREAD_CONFIG_CRYPTO_LIB_PLATFORM.
+    if(CONFIG_TINYPSA_BACKEND_PORTABLE)
+      set(OT_CTX OPENTHREAD_CONFIG_AES_CONTEXT_SIZE=248
+        OPENTHREAD_CONFIG_HMAC_SHA256_CONTEXT_SIZE=144 OPENTHREAD_CONFIG_SHA256_CONTEXT_SIZE=112)
+    else()
+      set(OT_CTX OPENTHREAD_CONFIG_AES_CONTEXT_SIZE=244
+        OPENTHREAD_CONFIG_HMAC_SHA256_CONTEXT_SIZE=264 OPENTHREAD_CONFIG_SHA256_CONTEXT_SIZE=200)
+    endif()
     zephyr_compile_definitions(
       OPENTHREAD_CONFIG_CRYPTO_LIB=2
-      OPENTHREAD_CONFIG_AES_CONTEXT_SIZE=248
-      OPENTHREAD_CONFIG_HMAC_SHA256_CONTEXT_SIZE=280
       OPENTHREAD_CONFIG_HKDF_CONTEXT_SIZE=32
-      OPENTHREAD_CONFIG_SHA256_CONTEXT_SIZE=200
+      ${OT_CTX}
     )
   endif()
 

@@ -20,25 +20,37 @@ psa_status_t tp_check_init(void)
 	return initialized ? PSA_SUCCESS : PSA_ERROR_BAD_STATE;
 }
 
-/* Update (10.1.2.2): fold data into K and V. */
-static void drbg_update(struct tp_drbg *d, const uint8_t *data, size_t len)
+/*
+ * out = HMAC(key, v || [round] || data). The DRBG's only HMAC context lives
+ * here, so update and generate nest without each holding one on the stack.
+ * out may be key or v: both are read before out is written.
+ */
+static __attribute__((noinline)) void drbg_hmac(uint8_t out[32], const uint8_t key[32],
+					      const uint8_t v[32], const uint8_t *round,
+					      const uint8_t *data, size_t len)
 {
 	uint8_t ctx[TINYPSA_HMAC_SHA256_CTX_SIZE] __attribute__((aligned(8)));
 
-	for (uint8_t round = 0; round < 2; round++) {
-		tp_be_hmac_sha256_init(ctx, d->k, sizeof(d->k));
-		tp_be_hmac_sha256_update(ctx, d->v, sizeof(d->v));
-		tp_be_hmac_sha256_update(ctx, &round, 1);
+	tp_be_hmac_sha256_init(ctx, key, 32);
+	tp_be_hmac_sha256_update(ctx, v, 32);
+	if (round) {
+		tp_be_hmac_sha256_update(ctx, round, 1);
 		tp_be_hmac_sha256_update(ctx, data, len);
-		tp_be_hmac_sha256_final(ctx, d->k);
-		tp_be_hmac_sha256_init(ctx, d->k, sizeof(d->k));
-		tp_be_hmac_sha256_update(ctx, d->v, sizeof(d->v));
-		tp_be_hmac_sha256_final(ctx, d->v);
+	}
+	tp_be_hmac_sha256_final(ctx, out);
+	tp_wipe(ctx, sizeof(ctx));
+}
+
+/* Update (10.1.2.2): fold data into K and V. */
+static void drbg_update(struct tp_drbg *d, const uint8_t *data, size_t len)
+{
+	for (uint8_t round = 0; round < 2; round++) {
+		drbg_hmac(d->k, d->k, d->v, &round, data, len);
+		drbg_hmac(d->v, d->k, d->v, NULL, NULL, 0);
 		if (len == 0) {
 			break;
 		}
 	}
-	tp_wipe(ctx, sizeof(ctx));
 }
 
 void tp_drbg_seed(struct tp_drbg *d, const uint8_t *seed, size_t len)
@@ -57,19 +69,14 @@ void tp_drbg_reseed(struct tp_drbg *d, const uint8_t *seed, size_t len)
 
 void tp_drbg_generate(struct tp_drbg *d, uint8_t *out, size_t len)
 {
-	uint8_t ctx[TINYPSA_HMAC_SHA256_CTX_SIZE] __attribute__((aligned(8)));
-
 	while (len) {
 		size_t n = len < sizeof(d->v) ? len : sizeof(d->v);
 
-		tp_be_hmac_sha256_init(ctx, d->k, sizeof(d->k));
-		tp_be_hmac_sha256_update(ctx, d->v, sizeof(d->v));
-		tp_be_hmac_sha256_final(ctx, d->v);
+		drbg_hmac(d->v, d->k, d->v, NULL, NULL, 0);
 		memcpy(out, d->v, n);
 		out += n;
 		len -= n;
 	}
-	tp_wipe(ctx, sizeof(ctx));
 	drbg_update(d, NULL, 0);
 	d->uses++;
 }
