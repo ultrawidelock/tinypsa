@@ -19,6 +19,26 @@ portable backend. One commit per step.
 On the UWL lock image (DWM3001CDK, release), against nrf_security: 18.6 KB
 less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
 
+## Board pass: tinylock door-lock (2026-10-17)
+
+The first full pass with tinypsa as the only PSA provider, run by the
+tinylock session on a DWM3001CDK (decawave_dwm3001cdk), LTO on, logs INF:
+tinylock 623785e, tinytalk f28240f, tinypsa b61bb7c, fragments
+`prj.conf;stacks/bt-host.conf;stacks/openthread.conf;stacks/tinypsa.conf;stacks/tinypsa-openthread.conf`
+(the last two are `zephyr/tinypsa.conf` and `zephyr/tinypsa-openthread.conf`),
+296,468 B flash, 95,968 B RAM. Portable backend, fast basemult on,
+OpenThread over PSA.
+
+Passed in Apple Home: commissioning over BLE, PASE (0.38 s to the first
+reply, host-stamped RTT, about +/- 50 ms), CASE on two fabrics (413 ms and
+264 ms) and from the hub (339 ms), Thread attach (1,098 ms) with
+OpenThread's SRP key as a persistent PSA key, lock and unlock from the phone
+and through the hub, factory reset with the settings wipe, and re-adding.
+
+Stack peaks from the paint, sampled every 60 s: system work queue 3,236 B
+of 6,144 B (nrf_security: 3,872 B); OpenThread thread 3,944 B of 4,096 B,
+reached in the minute of the first CASE over Thread.
+
 ## Next
 
 1. **Board pass** on the UWL lock image, with fast basemult and hardware
