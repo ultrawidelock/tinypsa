@@ -37,7 +37,13 @@ and through the hub, factory reset with the settings wipe, and re-adding.
 
 Stack peaks from the paint, sampled every 60 s: system work queue 3,236 B
 of 6,144 B (nrf_security: 3,872 B); OpenThread thread 3,944 B of 4,096 B,
-reached in the minute of the first CASE over Thread.
+reached in the minute of the first CASE over Thread. CASE runs there, from
+OpenThread's UDP callback. By `-fcallgraph-info=su` on the same sources
+without LTO, its C frames add up to 3,480 B: the work queue (48 B),
+OpenThread's receive path (568 B), tinytalk's datagram and Sigma3 handling
+(912 B), the PSA verify (408 B) and `p256_verify` (1,544 B). With a 32 B
+exception frame, that leaves about 432 B for the assembly under it. `zephyr/tinypsa-openthread.conf` now sets the thread to
+5,120 B: 1,176 B spare, 1,024 B more RAM (96,992 B), flash unchanged.
 
 ## Next
 
