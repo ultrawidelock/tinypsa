@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 
 if(CONFIG_TINYPSA)
   # Public PSA headers come from the workspace's Mbed TLS in client mode;

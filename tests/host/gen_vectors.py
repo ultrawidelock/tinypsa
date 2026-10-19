@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 """Turns the fetched CAVP and Wycheproof files into C tables (see vectors.h).
 
 Usage: gen_vectors.py <vectors dir> <out.c> [byte budget]

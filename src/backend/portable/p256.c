@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * P-256 over the vendored P256-Cortex-M4, which works on little-endian
  * 32-bit words; the backend interface is big-endian bytes. Deterministic

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 #
 # The host tests on a Nordic board, over the ocrypto backend:
 #

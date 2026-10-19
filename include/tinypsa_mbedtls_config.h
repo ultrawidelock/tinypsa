@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * MBEDTLS_CONFIG_FILE for tinypsa: Mbed TLS supplies only the public PSA
  * headers, viewed in client mode, with tinypsa's own operation structs.

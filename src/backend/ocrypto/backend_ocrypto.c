@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Backend over Nordic's ocrypto (nrf_oberon). Linked from the user's NCS
  * install, never vendored: its license limits use to Nordic chips.

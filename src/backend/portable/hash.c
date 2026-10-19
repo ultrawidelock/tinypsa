@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * SHA-256 over the vendored BearSSL sha2small, and HMAC-SHA-256 (RFC 2104)
  * over it directly. BearSSL's own HMAC keeps a hash union sized for

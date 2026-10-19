@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Hashing (SHA-256 only), MAC signing (HMAC-SHA-256 and AES-CMAC), and the
  * one-shot AES-ECB cipher. Every error past setup aborts the operation, so a

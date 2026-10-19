@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Mbed TLS for the host: the legacy primitives the test backend wraps, and
  * a full PSA implementation, limited to tinypsa's PSA_WANT set, as the

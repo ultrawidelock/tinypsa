@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * psa_crypto_init and the random generator: HMAC_DRBG with SHA-256
  * (SP 800-90A Rev. 1, 10.1.2), seeded and reseeded from the port's entropy

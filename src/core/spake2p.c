@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * SPAKE2+ over P-256 from the backend's point operations, so one
  * composition, and the RFC 9383 vectors, cover every backend.

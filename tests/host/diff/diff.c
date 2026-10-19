@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Differential test: random call sequences against tinypsa and Mbed TLS 3.6
  * PSA, comparing every status and every deterministic output.

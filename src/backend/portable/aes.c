@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * AES, CCM and GCM over the vendored BearSSL constant-time ("ct") AES, which
  * is bitsliced and table-free. GHASH is ghash_ctmul: constant-time where a

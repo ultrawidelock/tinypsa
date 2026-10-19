@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * SPAKE2+ over P-256 (RFC 9383), the group operations only: the caller owns
  * the transcript, key schedule and confirmation. The contract is ocrypto's

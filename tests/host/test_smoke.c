@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * One known answer per algorithm, through the public API, plus the state
  * and policy rules each family depends on. The bulk vectors come from

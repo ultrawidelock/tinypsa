@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 #ifndef TINYPSA_TEST_H
 #define TINYPSA_TEST_H
 

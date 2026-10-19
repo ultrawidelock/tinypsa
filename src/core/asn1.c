@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * The two Mbed TLS ASN.1 readers OpenThread's crypto_psa.c calls to unwrap
  * a SEC1 private key, with the semantics mbedtls/asn1.h documents: DER

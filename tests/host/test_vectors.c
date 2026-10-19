@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Runs the CAVP and Wycheproof tables through the public API. A vector the
  * implementation declines for a documented limit (a key over TP_KEY_MAX, KDF

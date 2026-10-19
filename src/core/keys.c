@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * The key table, key policy, and key management. Keys live in a fixed array
  * of slots. Operations copy a key out under the lock and compute without it,

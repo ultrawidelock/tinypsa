@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 # Runs inside the stock Ubuntu container started by run.sh: the repository
 # is at /src and Mbed TLS at /mbedtls. Installs a 32-bit ARM cross
 # toolchain and QEMU user mode first. Under QEMU everything runs several

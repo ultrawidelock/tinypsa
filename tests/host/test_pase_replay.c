@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * tinytalk's recorded PASE exchange, replayed through the four SPAKE2+
  * calls exactly as tinytalk's responder makes them (src/matter_pase_sm.c):

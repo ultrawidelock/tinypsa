@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /* Mbed TLS legacy crypto for the host test backend only. No PSA. */
 #ifndef TINYPSA_TEST_MBEDTLS_LEGACY_CONFIG_H
 #define TINYPSA_TEST_MBEDTLS_LEGACY_CONFIG_H

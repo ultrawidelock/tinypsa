@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * AES-CCM and AES-GCM, multipart and one-shot. The one-shot calls run the
  * multipart path so there is one implementation of the rules: CCM needs its

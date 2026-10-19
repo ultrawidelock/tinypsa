@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Zephyr port: a k_mutex, the chosen zephyr,entropy device, and persistent
  * keys as settings entries named tinypsa/<id in hex>. Key records are stored

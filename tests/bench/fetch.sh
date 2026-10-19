@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 #
 # Clones the candidate cores tests/bench compares, at the commits it was
 # last run with.

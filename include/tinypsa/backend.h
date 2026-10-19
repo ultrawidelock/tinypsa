@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * The primitives a backend supplies. The core owns every PSA rule (policy,
  * state, lengths, formats); a backend only computes. Context pointers point

@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Context sizes for the host test backend: generous enough for it and for the
  * portable families tested in its place, each of which asserts its own.

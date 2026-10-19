@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * tinypsa's primitives without the PSA layer, for code that holds its own
  * key bytes: the backend's operations (tinypsa/backend.h), whose contexts

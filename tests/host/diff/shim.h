@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * A plain-typed view of the PSA API, so the differential driver can call
  * two implementations whose headers cannot share a translation unit.

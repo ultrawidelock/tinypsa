@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Found ahead of Mbed TLS's own when psa-arch-tests compiles without an
  * MBEDTLS_CONFIG_FILE: it selects tinypsa's configuration instead.

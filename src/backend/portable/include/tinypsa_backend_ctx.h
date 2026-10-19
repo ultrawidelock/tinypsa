@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Context sizes for the portable backend on 32-bit targets, in bytes. Public
  * because operation objects embed them; each backend file asserts its own

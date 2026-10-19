@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 #
 # Host tests: the core, a host port, and a test-only backend over Mbed TLS's
 # legacy crypto (ocrypto ships only as Cortex-M archives).

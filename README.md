@@ -7,7 +7,7 @@ algorithm of its own beyond standard constructions over those primitives:
 CMAC (SP 800-38B), HKDF (RFC 5869), PBKDF2 with the RFC 4615 PRF,
 HMAC_DRBG (SP 800-90A), and SPAKE2+'s group operations (RFC 9383).
 
-License: ISC.
+License: Apache-2.0, see LICENSE; the vendored cores and their licenses are in NOTICE.
 
 ## What it provides
 

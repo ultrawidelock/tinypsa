@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Shapes of the generated vector tables (gen_vectors.py writes vectors.c).
  * Byte strings are hex. expect: 1 valid, 0 invalid, -1 either is acceptable.

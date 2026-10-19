@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Moves every PSA entry point of the host Mbed TLS build to ref_*, so tinypsa's
  * own link beside it and nothing of Mbed TLS's PSA core is reachable by accident.

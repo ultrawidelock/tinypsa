@@ -1,0 +1,15 @@
+tinypsa
+Copyright 2026 Aseem Chopra
+
+Licensed under the Apache License, Version 2.0: see LICENSE.
+
+Third-party code, each under its own license, kept verbatim with its notice:
+
+- BearSSL, src/backend/portable/bearssl/: Copyright (c) 2016 Thomas Pornin,
+  MIT license (src/backend/portable/bearssl/LICENSE.txt).
+- P256-Cortex-M4, src/backend/portable/p256-cortex-m4/: Copyright (c)
+  2017-2021 Emil Lenngren, Copyright (c) 2021 Shortcut Labs AB, MIT license
+  (the file headers).
+
+The ocrypto backend is glue only: Nordic's nrf_oberon is linked from the NCS
+install and never vendored.

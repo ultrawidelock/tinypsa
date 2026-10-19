@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 #
 # Candidate primitive cores timed and sized on a Nordic board, against
 # Oberon. tests/bench/fetch.sh puts the sources in build/ext.

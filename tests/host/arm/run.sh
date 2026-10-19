@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 #
 # The host suite on 32-bit ARM Linux under QEMU, with the portable backend
 # complete: its P-256 is Cortex-M assembly, which a Mac or x86 host cannot

@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /* The compositions in tinypsa/prim.h, over the DRBG and the backend. */
 #include <string.h>
 

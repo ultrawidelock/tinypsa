@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: ISC
+# SPDX-License-Identifier: Apache-2.0
 #
 # P256-Cortex-M4 build options, shared by the Zephyr module and the host
 # tests so both build what ships: only the P-256 functions the backend

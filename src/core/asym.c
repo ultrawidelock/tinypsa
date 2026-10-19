@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * ECDSA over P-256, randomized and deterministic (RFC 6979 with SHA-256),
  * and raw ECDH. Signatures are r || s, 64 bytes. Checks run in the order

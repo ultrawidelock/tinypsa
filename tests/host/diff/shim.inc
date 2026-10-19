@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * The shim body: public PSA API only, so it compiles unchanged against
  * either implementation. The includer defines SHIM(name) to prefix names.

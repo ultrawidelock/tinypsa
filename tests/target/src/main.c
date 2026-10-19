@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Board entry: the host suite, then a persistent key that must survive a
  * reset. The first boot stores it; the next boot finds it, checks it and

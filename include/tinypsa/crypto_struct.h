@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: ISC */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * tinypsa's replacement for Mbed TLS's psa/crypto_struct.h, selected through
  * MBEDTLS_PSA_CRYPTO_STRUCT_FILE. Operation objects carry their backend
