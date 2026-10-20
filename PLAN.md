@@ -23,7 +23,7 @@ less code, 1.2 KB less RAM. Only the Bluetooth host still calls PSA.
 
 The first full pass with tinypsa as the only PSA provider, run by the
 tinylock session on a DWM3001CDK (decawave_dwm3001cdk), LTO on, logs INF:
-tinylock b98e9de, tinytalk dd97ef1, tinypsa b61bb7c, fragments
+tinylock b98e9de, tinytalk 4f3a60b, tinypsa b61bb7c, fragments
 `prj.conf;stacks/bt-host.conf;stacks/openthread.conf;stacks/tinypsa.conf;stacks/tinypsa-openthread.conf`
 (the last two are `zephyr/tinypsa.conf` and `zephyr/tinypsa-openthread.conf`),
 296,468 B flash, 95,968 B RAM. Portable backend, fast basemult on,
