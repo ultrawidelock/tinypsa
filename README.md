@@ -39,3 +39,6 @@ Also: `tinypsa_diff` against Mbed TLS PSA, Arm's psa-arch-tests
 (`tests/host/arch/run.sh`), on target (`tests/target`).
 
 Apache-2.0. Vendored cores: `NOTICE`.
+
+Unofficial. Not affiliated with, endorsed or certified by any company or
+standards body named here. Trademarks belong to their owners.
