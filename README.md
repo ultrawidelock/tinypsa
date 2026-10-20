@@ -1,134 +1,41 @@
 # tinypsa
 
-A minimal PSA Crypto API provider for Zephyr. It implements the 42 PSA calls,
-and the two Mbed TLS ASN.1 readers, that OpenThread, the Zephyr Bluetooth host
-and UltraWideLock make, over a vetted primitive backend. It adds no crypto
-algorithm of its own beyond standard constructions over those primitives:
-CMAC (SP 800-38B), HKDF (RFC 5869), PBKDF2 with the RFC 4615 PRF,
-HMAC_DRBG (SP 800-90A), and SPAKE2+'s group operations (RFC 9383).
+A minimal PSA Crypto provider for Zephyr: the 42 calls OpenThread, the
+Zephyr Bluetooth host and tinytalk make, over a vetted primitive backend.
+No crypto of its own beyond standard constructions.
 
-License: Apache-2.0, see LICENSE; the vendored cores and their licenses are in NOTICE.
-
-## What it provides
-
-| Family | Algorithms |
-|---|---|
-| Keys | import, generate, export, export public, destroy, attributes; volatile and persistent |
-| Hash | SHA-256 |
-| MAC | HMAC-SHA-256, AES-CMAC, truncated |
-| Cipher | AES-ECB, one-shot encrypt |
-| AEAD | AES-CCM, AES-GCM, one-shot and multipart |
-| Signature | ECDSA P-256 with SHA-256, randomized and deterministic (RFC 6979) |
-| Key agreement | raw ECDH P-256 |
-| Key derivation | HKDF-SHA-256, PBKDF2-AES-CMAC-PRF-128 |
-| PAKE | SPAKE2+ P-256 group operations, outside the PSA API: `tinypsa_spake2p_p256_*` in `<tinypsa/spake2p_p256.h>`, with ocrypto's contract |
-| Random | HMAC_DRBG seeded from the `zephyr,entropy` device |
+SHA-256 · HMAC · AES-CMAC · AES-ECB · AES-CCM · AES-GCM · ECDSA P-256 ·
+ECDH P-256 · HKDF · PBKDF2 · SPAKE2+ · HMAC_DRBG
 
 Anything else returns `PSA_ERROR_NOT_SUPPORTED`.
 
-## Use in a Zephyr application
+18,216 B flash, 1,501 B RAM, LTO release build, portable backend.
 
-Add the checkout as a module and select the custom provider:
+## Use
 
 ```cmake
-list(APPEND ZEPHYR_EXTRA_MODULES <path to tinypsa>)
+list(APPEND ZEPHYR_EXTRA_MODULES <tinypsa>)
 ```
 
-```
-CONFIG_PSA_CRYPTO=y
-CONFIG_PSA_CRYPTO_PROVIDER_CUSTOM=y
-# On NCS, nrf_security must be off; OpenThread then needs its Custom choice.
-CONFIG_NRF_SECURITY=n
-CONFIG_CUSTOM_OPENTHREAD_SECURITY=y
-CONFIG_OPENTHREAD_CRYPTO_PSA=y
-CONFIG_OPENTHREAD_MBEDTLS_LIB_NAME="tinypsa"
-```
+Then the fragment `zephyr/tinypsa.conf`, plus `zephyr/tinypsa-openthread.conf`
+in an image with OpenThread. Tunables: `menuconfig TINYPSA`.
 
-A sample copies these as two fragments, each line with its reason:
-`zephyr/tinypsa.conf` holds the provider lines, the key slots and the
-`PSA_WANT_*` a Bluetooth, Thread and tinytalk image calls;
-`zephyr/tinypsa-openthread.conf` holds the three OpenThread lines, for an
-image that runs OpenThread.
+**Backends** `portable`, vendored and permissive, the default on Cortex-M4
+and M33. `ocrypto`, Nordic's Oberon from NCS, never vendored.
 
-Kconfig options (`menuconfig TINYPSA`):
+**Persistent keys** are settings entries `tinypsa/<id>`, in the clear. NCS
+trusted storage only obfuscated them. Keys it wrote are not read.
 
-| Option | Default | Meaning |
-|---|---|---|
-| `TINYPSA_KEY_SLOTS` | 16 | keys held in RAM at once |
-| `TINYPSA_KEY_MAX_SIZE` | 65 | largest key in bytes; 65 fits a P-256 public key |
-| `TINYPSA_KDF_INPUT_MAX` | 64 | salt plus info buffered by a derivation |
-| `TINYPSA_DRBG_RESEED_INTERVAL` | 4096 | DRBG requests between reseeds |
-| `TINYPSA_PERSISTENT_KEYS` | y with `SETTINGS` | persistent keys as settings entries |
-
-Persistent keys are stored as settings entries named `tinypsa/<id in hex>`,
-in the clear. NCS trusted storage sealed them with a key hashed from the
-device UID, which anyone holding the flash can recompute, so this drops
-obfuscation, not secrecy. Keys written by NCS trusted storage are not read.
-
-In a Bluetooth host, OpenThread and tinytalk image (`zephyr/tinypsa.conf`),
-tinytalk's keys are volatile, and the persistent ones are OpenThread's: with
-`OPENTHREAD_CRYPTO_PSA` its SRP client key, network key and PSKc, and the
-dataset copies of the last two, are entries `tinypsa/00020001` to
-`tinypsa/00020007` (OpenThread's IDs from `OPENTHREAD_PSA_ITS_NVM_OFFSET`,
-0x20000 by default), each an unencrypted record in the settings partition.
-A factory reset that clears the settings store, as the door-lock sample's
-does, removes them with everything else.
-
-## Backends
-
-- `ocrypto`: Nordic's nrf_oberon, linked from the NCS install. Never vendored:
-  its license limits use to Nordic chips, and it ships only as Cortex-M
-  archives.
-- `portable`: vendored, permissively licensed cores, nothing from the SDK;
-  see `src/backend/portable/README.md`.
-
-The default is `portable` on a Cortex-M4 or M33, whose assembly its P-256
-needs, and `ocrypto` on any other Nordic core. Select
-`CONFIG_TINYPSA_BACKEND_OCRYPTO=y` to keep Oberon on an M4 or M33.
-
-## Tests
-
-Host tests run the core over a test-only backend built on Mbed TLS's legacy
-primitives, because ocrypto has no host build.
+## Test
 
 ```sh
-tests/vectors/fetch.sh build/vectors          # pinned CAVP and Wycheproof files
-cmake -S tests/host -B build/host -G Ninja \
-  -DCMAKE_C_COMPILER=/usr/bin/cc -DTINYPSA_MBEDTLS_DIR=<Mbed TLS 3.6 tree>
+tests/vectors/fetch.sh build/vectors
+cmake -S tests/host -B build/host -G Ninja -DTINYPSA_MBEDTLS_DIR=<mbedtls-3.6>
 cmake --build build/host
-build/host/tinypsa_host_test                  # smoke tests plus all vectors
-(mkdir -p build/diffrun && cd build/diffrun && ../host/tinypsa_diff 1 50000)
-tests/host/arch/run.sh <psa-arch-tests v24.03 checkout> build/host <Mbed TLS tree>
+build/host/tinypsa_host_test   # known answers, NIST CAVP, Wycheproof
 ```
 
-Each runs twice: over the test backend, and as `*_portable` with the
-portable backend's C families swapped in for the test backend's.
+Also: `tinypsa_diff` against Mbed TLS PSA, Arm's psa-arch-tests
+(`tests/host/arch/run.sh`), on target (`tests/target`).
 
-- `tinypsa_host_test`: known answers per algorithm, then NIST CAVP (SHA-256,
-  HMAC, CMAC, AES-ECB, CCM, GCM, ECDSA SigVer and SigGen, ECDH, HMAC_DRBG)
-  and Wycheproof (GCM, CCM, CMAC, HMAC, HKDF, ECDSA P1363, ECDH). Given
-  tinytalk's `tests/host/test_matter_pase_sm.c` as its argument, it also
-  replays tinytalk's recorded PASE exchange through the four SPAKE2+ calls,
-  in tinytalk's order and with its arguments; without it, that is skipped.
-- `tinypsa_diff`: differential test against Mbed TLS 3.6 PSA, comparing every
-  status and every deterministic output over random call sequences. The few
-  places tinypsa differs on purpose are counted as "by design" with their
-  reason in `diff.c`.
-- `arch/run.sh`: Arm's psa-arch-tests crypto suite. Calls tinypsa does not
-  provide link to stubs returning `PSA_ERROR_NOT_SUPPORTED`.
-
-The ocrypto backend runs only on a Nordic chip. `tests/target` builds the
-smoke tests and an evenly spaced sample of the vector tables (about 300 KB of
-hex, `TINYPSA_VECTOR_BUDGET`) into a Zephyr app, then checks that a persistent
-key survives a reset. Results go to RTT; reset the board once more to see the
-key check.
-
-```sh
-west build -b <board> -d build/target tests/target
-west flash -d build/target --erase
-```
-
-`tests/bench` times candidate P-256, AES-GCM and SHA-256 cores against
-Oberon on a Nordic board, checking every output against Oberon's, and its
-link map gives each core's size. `tests/bench/fetch.sh` fetches the
-candidates at pinned commits.
+Apache-2.0. Vendored cores: `NOTICE`.
