@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * What the core needs from the platform: one lock, an entropy source, and

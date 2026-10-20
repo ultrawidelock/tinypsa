@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /* Host port for tests: no threads, the OS RNG, and an in-memory key store. */
 #include <stdlib.h>

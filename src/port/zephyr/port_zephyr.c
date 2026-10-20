@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Zephyr port: a k_mutex, the chosen zephyr,entropy device, and persistent

@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Shapes of the generated vector tables (gen_vectors.py writes vectors.c).

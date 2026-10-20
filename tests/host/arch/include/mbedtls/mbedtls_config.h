@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Found ahead of Mbed TLS's own when psa-arch-tests compiles without an

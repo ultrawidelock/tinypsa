@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 Aseem Chopra
 # SPDX-License-Identifier: Apache-2.0
 #
 # Clones the candidate cores tests/bench compares, at the commits it was

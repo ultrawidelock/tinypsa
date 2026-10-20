@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * ECDSA over P-256, randomized and deterministic (RFC 6979 with SHA-256),

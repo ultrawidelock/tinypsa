@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Aseem Chopra
 # SPDX-License-Identifier: Apache-2.0
 #
 # P256-Cortex-M4 build options, shared by the Zephyr module and the host

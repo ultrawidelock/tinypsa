@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Key derivation: PBKDF2-AES-CMAC-PRF-128 (RFC 8018 with the RFC 4615 PRF),

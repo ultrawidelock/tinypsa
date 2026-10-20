@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * The two Mbed TLS ASN.1 readers OpenThread's crypto_psa.c calls to unwrap

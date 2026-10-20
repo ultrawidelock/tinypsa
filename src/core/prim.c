@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /* The compositions in tinypsa/prim.h, over the DRBG and the backend. */
 #include <string.h>

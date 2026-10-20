@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * SHA-256 over the vendored BearSSL sha2small, and HMAC-SHA-256 (RFC 2104)

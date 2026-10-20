@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /* The PSA_WANT set tinypsa provides, for host builds without Kconfig. */
 #ifndef TINYPSA_HOST_PSA_WANT_H

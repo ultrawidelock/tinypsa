@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /* psa-arch-tests feature set for tinypsa: P-256, AES-CCM/GCM/CMAC/ECB, SHA-256, HMAC, HKDF, PBKDF2. */
 #ifndef _PAL_CRYPTO_CONFIG_H_

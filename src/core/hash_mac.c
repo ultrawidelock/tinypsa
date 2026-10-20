@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * Hashing (SHA-256 only), MAC signing (HMAC-SHA-256 and AES-CMAC), and the

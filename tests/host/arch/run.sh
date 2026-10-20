@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 Aseem Chopra
+# SPDX-License-Identifier: Apache-2.0
+
 # Builds and runs the Arm psa-arch-tests crypto suite against tinypsa on the host.
 #   tests/host/arch/run.sh <psa-arch-tests checkout> <tinypsa host build dir> <mbedtls dir>
 # Functions tinypsa does not provide link to stubs returning NOT_SUPPORTED.

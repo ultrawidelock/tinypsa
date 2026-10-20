@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2026 Aseem Chopra
 # SPDX-License-Identifier: Apache-2.0
 #
 # Candidate primitive cores timed and sized on a Nordic board, against

@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 Aseem Chopra
+# SPDX-License-Identifier: Apache-2.0
+
 # Fetches the pinned test vectors into $1 (default build/vectors) and checks
 # each against sources.sha256. --pin records the sums instead of checking.
 set -eu

@@ -1,3 +1,4 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 /*
  * AES, CCM and GCM over the vendored BearSSL constant-time ("ct") AES, which
