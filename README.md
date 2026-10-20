@@ -9,7 +9,7 @@ ECDH P-256 · HKDF · PBKDF2 · SPAKE2+ · HMAC_DRBG
 
 Anything else returns `PSA_ERROR_NOT_SUPPORTED`.
 
-18,216 B flash, 1,501 B RAM, LTO release build, portable backend.
+17.8 KB flash, 1.5 KB RAM, LTO release build, portable backend.
 
 ## Use
 
